@@ -1,22 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login.dart';
 
-class Registration extends StatefulWidget {
-  const Registration({super.key});
+enum UserTypeEnum { Freelancer, Investor }
+
+class Complete_Profile extends StatefulWidget {
+  const Complete_Profile({super.key});
 
   @override
-  State<Registration> createState() => _RegistrationState();
+  State<Complete_Profile> createState() => _Complete_ProfileState();
 }
 
-class _RegistrationState extends State<Registration> {
-  String errorText = '';
+class _Complete_ProfileState extends State<Complete_Profile> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController _emailController = TextEditingController();
-    TextEditingController _passwordController = TextEditingController();
-    TextEditingController _confirmPasswordController = TextEditingController();
+    UserTypeEnum? _UserTypeEnum;
 
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
@@ -27,7 +26,6 @@ class _RegistrationState extends State<Registration> {
             child: Card(
               child: Column(
                 children: <Widget>[
-                  Text(errorText),
                   Form(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -38,7 +36,26 @@ class _RegistrationState extends State<Registration> {
                             height: 20,
                           ),
                           TextFormField(
-                            controller: _emailController,
+                            decoration: const InputDecoration(
+                              hintText: "Enter your Name",
+                              labelText: "Name",
+                              prefixIcon: Icon(Icons.person),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              hintText: "Enter your Surname",
+                              labelText: "Surname",
+                              prefixIcon: Icon(Icons.person),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             decoration: const InputDecoration(
                               hintText: "Enter your Email",
@@ -50,7 +67,6 @@ class _RegistrationState extends State<Registration> {
                             height: 20,
                           ),
                           TextFormField(
-                            controller: _passwordController,
                             obscureText: true,
                             decoration: const InputDecoration(
                               hintText: "Select a Password",
@@ -62,7 +78,6 @@ class _RegistrationState extends State<Registration> {
                             height: 20,
                           ),
                           TextFormField(
-                            controller: _confirmPasswordController,
                             obscureText: true,
                             decoration: const InputDecoration(
                               hintText: "Re-Type your Password",
@@ -73,33 +88,42 @@ class _RegistrationState extends State<Registration> {
                           const SizedBox(
                             height: 20,
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              const Text("Type:"),
+                              Expanded(
+                                child: RadioListTile<UserTypeEnum>(
+                                    value: UserTypeEnum.Freelancer,
+                                    groupValue: _UserTypeEnum,
+                                    title: Text(UserTypeEnum.Freelancer.name),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _UserTypeEnum = val;
+                                      });
+                                    }),
+                              ),
+                              Expanded(
+                                child: RadioListTile<UserTypeEnum>(
+                                    value: UserTypeEnum.Investor,
+                                    groupValue: _UserTypeEnum,
+                                    title: Text(UserTypeEnum.Investor.name),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _UserTypeEnum = val;
+                                      });
+                                    }),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  if (_passwordController.text ==
-                                      _confirmPasswordController.text) {
-                                    FirebaseAuth.instance
-                                        .createUserWithEmailAndPassword(
-                                            email: _emailController.text,
-                                            password: _passwordController.text)
-                                        .then((val) {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Complete_Profile()));
-                                    }).onError((error, stackTrace) {
-                                      print("Error ${error.toString()}");
-                                    });
-                                  } else {
-                                    setState(() {
-                                      errorText =
-                                          'Password and Confirm Password are not same';
-                                    });
-                                  }
-                                },
+                                onPressed: () {},
                                 child: const Text('Register'),
                               ),
                             ),
@@ -112,11 +136,15 @@ class _RegistrationState extends State<Registration> {
                                   const Text("Already Have an Account?"),
                                   ElevatedButton(
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Login()));
+                                      FirebaseAuth.instance
+                                          .signOut()
+                                          .then((value) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const Login()));
+                                      });
                                     },
                                     child: const Text('Login'),
                                   ),

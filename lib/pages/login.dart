@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/dashboard.dart';
+import 'package:freelancer2capitalist/pages/registration.dart';
 
 // enum userTypeEnum { Freelancer, Investor }
 
@@ -132,8 +134,11 @@ class _LoginState extends State<Login> {
                                     context: context);
                                 print(user);
                                 if (user != null) {
-                                  Navigator.pushReplacementNamed(
-                                      context, '/dashboard');
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const Dashboard()));
                                 } else {
                                   _emailController.text = "";
                                   _passwordController.text = "";
@@ -142,8 +147,11 @@ class _LoginState extends State<Login> {
                               child: const Text("Login")),
                           ElevatedButton(
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, "/registration");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Registration()));
                               },
                               child: const Text("Registration")),
                         ],

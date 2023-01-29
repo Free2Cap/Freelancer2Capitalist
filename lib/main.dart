@@ -9,14 +9,14 @@ import 'firebase_options.dart';
 void main() {
   runApp(MaterialApp(
     title: "Freelancer2Capitalist",
-    home: Home(),
+    home: const Home(),
     theme: ThemeData(
       primarySwatch: Colors.blue,
     ),
     routes: {
-      "/login": (context) => Login(),
-      "/registration": (context) => Registration(),
-      "/dashboard": (context) => Dashboard(),
+      "/login": (context) => const Login(),
+      "/registration": (context) => const Registration(),
+      "/dashboard": (context) => const Dashboard(),
     },
   ));
 }
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
         future: _initializeFirebase(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Registration();
+            return const Login();
           }
           return const Center(
             child: CircularProgressIndicator(),
