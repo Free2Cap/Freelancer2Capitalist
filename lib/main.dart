@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
         future: _initializeFirebase(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return Login();
+            return Registration();
           }
           return const Center(
             child: CircularProgressIndicator(),
