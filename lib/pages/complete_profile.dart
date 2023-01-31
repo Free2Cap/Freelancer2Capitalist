@@ -1,9 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login.dart';
 
-enum UserTypeEnum { Freelancer, Investor }
+enum userTypeEnum { Freelancer, Investor }
+
+enum genderEnum { Male, Female, Other }
 
 class Complete_Profile extends StatefulWidget {
   const Complete_Profile({super.key});
@@ -13,9 +15,14 @@ class Complete_Profile extends StatefulWidget {
 }
 
 class _Complete_ProfileState extends State<Complete_Profile> {
+  userTypeEnum? _userTypeEnum;
+  genderEnum? _genderEnum;
+  String errorText = '';
   @override
   Widget build(BuildContext context) {
-    UserTypeEnum? _UserTypeEnum;
+    TextEditingController _nameController = TextEditingController();
+    TextEditingController _surnameController = TextEditingController();
+    TextEditingController _phoneNumberController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.blueGrey[50],
@@ -26,16 +33,18 @@ class _Complete_ProfileState extends State<Complete_Profile> {
             child: Card(
               child: Column(
                 children: <Widget>[
+                  Text(errorText),
                   Form(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: <Widget>[
-                          const Text("Registration"),
+                          const Text("Complete Profile"),
                           const SizedBox(
                             height: 20,
                           ),
                           TextFormField(
+                            controller: _nameController,
                             decoration: const InputDecoration(
                               hintText: "Enter your Name",
                               labelText: "Name",
@@ -46,6 +55,7 @@ class _Complete_ProfileState extends State<Complete_Profile> {
                             height: 20,
                           ),
                           TextFormField(
+                            controller: _surnameController,
                             decoration: const InputDecoration(
                               hintText: "Enter your Surname",
                               labelText: "Surname",
@@ -56,33 +66,12 @@ class _Complete_ProfileState extends State<Complete_Profile> {
                             height: 20,
                           ),
                           TextFormField(
-                            keyboardType: TextInputType.emailAddress,
+                            controller: _phoneNumberController,
+                            keyboardType: TextInputType.phone,
                             decoration: const InputDecoration(
-                              hintText: "Enter your Email",
-                              labelText: "Email",
-                              prefixIcon: Icon(Icons.email),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              hintText: "Select a Password",
-                              labelText: "Password",
-                              prefixIcon: Icon(Icons.password),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              hintText: "Re-Type your Password",
-                              labelText: "Confirm Password",
-                              prefixIcon: Icon(Icons.password),
+                              hintText: "Enter your Phone Number",
+                              labelText: "Ph. No.",
+                              prefixIcon: Icon(Icons.phone),
                             ),
                           ),
                           const SizedBox(
@@ -91,30 +80,75 @@ class _Complete_ProfileState extends State<Complete_Profile> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              const Text("Type:"),
+                              const Text("Gender"),
                               Expanded(
-                                child: RadioListTile<UserTypeEnum>(
-                                    value: UserTypeEnum.Freelancer,
-                                    groupValue: _UserTypeEnum,
-                                    title: Text(UserTypeEnum.Freelancer.name),
-                                    onChanged: (val) {
+                                child: RadioListTile(
+                                    value: genderEnum.Male,
+                                    groupValue: _genderEnum,
+                                    title: Text(genderEnum.Male.name),
+                                    onChanged: (value) {
                                       setState(() {
-                                        _UserTypeEnum = val;
+                                        _genderEnum = value;
                                       });
                                     }),
                               ),
                               Expanded(
-                                child: RadioListTile<UserTypeEnum>(
-                                    value: UserTypeEnum.Investor,
-                                    groupValue: _UserTypeEnum,
-                                    title: Text(UserTypeEnum.Investor.name),
-                                    onChanged: (val) {
+                                child: RadioListTile(
+                                    value: genderEnum.Female,
+                                    groupValue: _genderEnum,
+                                    title: Text(genderEnum.Female.name),
+                                    onChanged: (value) {
                                       setState(() {
-                                        _UserTypeEnum = val;
+                                        _genderEnum = value;
+                                      });
+                                    }),
+                              ),
+                              Expanded(
+                                child: RadioListTile(
+                                    value: genderEnum.Other,
+                                    groupValue: _genderEnum,
+                                    title: Text(genderEnum.Other.name),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _genderEnum = value;
                                       });
                                     }),
                               ),
                             ],
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              const Text("User Type:"),
+                              Expanded(
+                                child: RadioListTile<userTypeEnum>(
+                                    value: userTypeEnum.Freelancer,
+                                    groupValue: _userTypeEnum,
+                                    title: Text(userTypeEnum.Freelancer.name),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _userTypeEnum = val;
+                                      });
+                                    }),
+                              ),
+                              Expanded(
+                                child: RadioListTile<userTypeEnum>(
+                                    value: userTypeEnum.Investor,
+                                    groupValue: _userTypeEnum,
+                                    title: Text(userTypeEnum.Investor.name),
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _userTypeEnum = val;
+                                      });
+                                    }),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 20,
                           ),
                           const SizedBox(
                             height: 20,
@@ -124,31 +158,9 @@ class _Complete_ProfileState extends State<Complete_Profile> {
                               padding: const EdgeInsets.all(8.0),
                               child: ElevatedButton(
                                 onPressed: () {},
-                                child: const Text('Register'),
+                                child: const Text('Save'),
                               ),
                             ),
-                          ),
-                          Center(
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  const Text("Already Have an Account?"),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      FirebaseAuth.instance
-                                          .signOut()
-                                          .then((value) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const Login()));
-                                      });
-                                    },
-                                    child: const Text('Login'),
-                                  ),
-                                ]),
                           ),
                         ],
                       ),

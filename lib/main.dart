@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/dashboard.dart';
 import 'package:freelancer2capitalist/pages/login.dart';
 import 'package:freelancer2capitalist/pages/registration.dart';
@@ -43,7 +44,7 @@ class _HomeState extends State<Home> {
         future: _initializeFirebase(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return const Login();
+            return Complete_Profile();
           }
           return const Center(
             child: CircularProgressIndicator(),

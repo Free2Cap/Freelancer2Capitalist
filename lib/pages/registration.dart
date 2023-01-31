@@ -89,7 +89,11 @@ class _RegistrationState extends State<Registration> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const Complete_Profile()));
+                                                  Complete_Profile(),
+                                              settings: RouteSettings(
+                                                arguments:
+                                                    _emailController.text,
+                                              )));
                                     }).onError((error, stackTrace) {
                                       print("Error ${error.toString()}");
                                     });
