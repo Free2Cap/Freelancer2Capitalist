@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
@@ -11,6 +10,8 @@ import 'forgot_password_verification_page.dart';
 import 'registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _ProfilePageState();
@@ -18,19 +19,19 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  double _drawerIconSize = 24;
-  double _drawerFontSize = 17;
+  final double _drawerIconSize = 24;
+  final double _drawerFontSize = 17;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Profile Page",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         elevation: 0.5,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         flexibleSpace: Container(
           decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -38,31 +39,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   end: Alignment.bottomRight,
                   colors: <Color>[
                 Theme.of(context).primaryColor,
-                Theme.of(context).accentColor,
+                Theme.of(context).colorScheme.secondary,
               ])),
         ),
         actions: [
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 16,
               right: 16,
             ),
             child: Stack(
               children: <Widget>[
-                Icon(Icons.notifications),
+                const Icon(Icons.notifications),
                 Positioned(
                   right: 0,
                   child: Container(
-                    padding: EdgeInsets.all(1),
+                    padding: const EdgeInsets.all(1),
                     decoration: BoxDecoration(
                       color: Colors.red,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    constraints: BoxConstraints(
+                    constraints: const BoxConstraints(
                       minWidth: 12,
                       minHeight: 12,
                     ),
-                    child: Text(
+                    child: const Text(
                       '5',
                       style: TextStyle(
                         color: Colors.white,
@@ -83,13 +84,13 @@ class _ProfilePageState extends State<ProfilePage> {
               gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  stops: [
+                  stops: const [
                 0.0,
                 1.0
               ],
                   colors: [
                 Theme.of(context).primaryColor.withOpacity(0.2),
-                Theme.of(context).accentColor.withOpacity(0.5),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
               ])),
           child: ListView(
             children: [
@@ -99,16 +100,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    stops: [0.0, 1.0],
+                    stops: const [0.0, 1.0],
                     colors: [
                       Theme.of(context).primaryColor,
-                      Theme.of(context).accentColor,
+                      Theme.of(context).colorScheme.secondary,
                     ],
                   ),
                 ),
                 child: Container(
                   alignment: Alignment.bottomLeft,
-                  child: Text(
+                  child: const Text(
                     "DASHBOARD",
                     style: TextStyle(
                         fontSize: 25,
@@ -121,12 +122,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Icon(
                   Icons.screen_lock_landscape_rounded,
                   size: _drawerIconSize,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
                   'Splash Screen',
                   style: TextStyle(
-                      fontSize: 17, color: Theme.of(context).accentColor),
+                      fontSize: 17,
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
                   Navigator.push(
@@ -139,17 +141,17 @@ class _ProfilePageState extends State<ProfilePage> {
               ListTile(
                 leading: Icon(Icons.login_rounded,
                     size: _drawerIconSize,
-                    color: Theme.of(context).accentColor),
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text(
                   'Login Page',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
               ),
@@ -160,12 +162,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ListTile(
                 leading: Icon(Icons.person_add_alt_1,
                     size: _drawerIconSize,
-                    color: Theme.of(context).accentColor),
+                    color: Theme.of(context).colorScheme.secondary),
                 title: Text(
                   'Registration Page',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
                   Navigator.push(
@@ -182,19 +184,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Icon(
                   Icons.password_rounded,
                   size: _drawerIconSize,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
                   'Forgot Password Page',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ForgotPasswordPage()),
+                        builder: (context) => const ForgotPasswordPage()),
                   );
                 },
               ),
@@ -206,19 +208,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Icon(
                   Icons.verified_user_sharp,
                   size: _drawerIconSize,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
                   'Verification Page',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ForgotPasswordVerificationPage()),
+                        builder: (context) =>
+                            const ForgotPasswordVerificationPage()),
                   );
                 },
               ),
@@ -230,16 +233,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Icon(
                   Icons.logout_rounded,
                   size: _drawerIconSize,
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
                   'Logout',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
-                      color: Theme.of(context).accentColor),
+                      color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
-                  SystemNavigator.pop();
+                  FirebaseAuth.instance.signOut().then((value) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginPage(),
+                      ),
+                    );
+                  });
                 },
               ),
             ],
@@ -249,27 +259,27 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            Container(
+            const SizedBox(
               height: 100,
               child: HeaderWidget(100, false, Icons.house_rounded),
             ),
             Container(
               alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(25, 10, 25, 10),
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              margin: const EdgeInsets.fromLTRB(25, 10, 25, 10),
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
                       border: Border.all(width: 5, color: Colors.white),
                       color: Colors.white,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black12,
                           blurRadius: 20,
-                          offset: const Offset(5, 5),
+                          offset: Offset(5, 5),
                         ),
                       ],
                     ),
@@ -279,32 +289,32 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Colors.grey.shade300,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     'Ms Anchal Singh',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text(
+                  const Text(
                     'Freelancer',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: <Widget>[
                         Container(
                           padding:
                               const EdgeInsets.only(left: 8.0, bottom: 4.0),
                           alignment: Alignment.topLeft,
-                          child: Text(
+                          child: const Text(
                             "User Information",
                             style: TextStyle(
                               color: Colors.black87,
@@ -317,7 +327,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Card(
                           child: Container(
                             alignment: Alignment.topLeft,
-                            padding: EdgeInsets.all(15),
+                            padding: const EdgeInsets.all(15),
                             child: Column(
                               children: <Widget>[
                                 Column(
@@ -325,25 +335,25 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        ListTile(
+                                        const ListTile(
                                           contentPadding: EdgeInsets.symmetric(
                                               horizontal: 12, vertical: 4),
                                           leading: Icon(Icons.my_location),
                                           title: Text("Location"),
                                           subtitle: Text("USA"),
                                         ),
-                                        ListTile(
+                                        const ListTile(
                                           leading: Icon(Icons.email),
                                           title: Text("Email"),
                                           subtitle:
                                               Text("anchalsingh1029@gmail.com"),
                                         ),
-                                        ListTile(
+                                        const ListTile(
                                           leading: Icon(Icons.phone),
                                           title: Text("Phone"),
                                           subtitle: Text("9104601838"),
                                         ),
-                                        ListTile(
+                                        const ListTile(
                                           leading: Icon(Icons.person),
                                           title: Text("About Me"),
                                           subtitle: Text(

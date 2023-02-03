@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
@@ -17,8 +16,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  double _headerHeight = 250;
-  Key _formKey = GlobalKey<FormState>();
+  final double _headerHeight = 250;
+  final Key _formKey = GlobalKey<FormState>();
 
 //Login Function
   static Future<User?> loginUsingEmailPassword(
@@ -33,67 +32,73 @@ class _LoginPageState extends State<LoginPage> {
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
       if (e.code == "user-not-found") {
+        // ignore: avoid_print
         print("No user found for that email");
       }
     }
     return user;
   }
+
   @override
   Widget build(BuildContext context) {
+    TextEditingController emailController = TextEditingController();
+    TextEditingController passwordController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: _headerHeight,
               child: HeaderWidget(_headerHeight, true,
                   Icons.login_rounded), //let's create a common header widget
             ),
             SafeArea(
               child: Container(
-                  padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  margin: EdgeInsets.fromLTRB(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  margin: const EdgeInsets.fromLTRB(
                       20, 10, 20, 10), // This will be the login form
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'Freelancing Capitalist',
                         style: TextStyle(
                             fontSize: 60, fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                        'Signin into your account',
+                      const Text(
+                        'Sign In into your account',
                         style: TextStyle(color: Colors.grey),
                       ),
-                      SizedBox(height: 30.0),
+                      const SizedBox(height: 30.0),
                       Form(
                           key: _formKey,
                           child: Column(
                             children: [
                               Container(
-                                child: TextField(
-                                  decoration: ThemeHelper().textInputDecoration(
-                                      'User Name', 'Enter your user name'),
-                                ),
-                                
                                 decoration:
                                     ThemeHelper().inputBoxDecorationShaddow(),
-                                
-                              ),
-                              SizedBox(height: 30.0),
-                              Container(
                                 child: TextField(
+                                  controller: emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  decoration: ThemeHelper().textInputDecoration(
+                                      'User Name', 'Enter your Email name'),
+                                ),
+                              ),
+                              const SizedBox(height: 30.0),
+                              Container(
+                                decoration:
+                                    ThemeHelper().inputBoxDecorationShaddow(),
+                                child: TextField(
+                                  controller: passwordController,
                                   obscureText: true,
                                   decoration: ThemeHelper().textInputDecoration(
                                       'Password', 'Enter your password'),
                                 ),
-                                decoration:
-                                    ThemeHelper().inputBoxDecorationShaddow(),
                               ),
-                              SizedBox(height: 15.0),
+                              const SizedBox(height: 15.0),
                               Container(
-                                margin: EdgeInsets.fromLTRB(10, 0, 10, 20),
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 0, 10, 20),
                                 alignment: Alignment.topRight,
                                 child: GestureDetector(
                                   onTap: () {
@@ -101,10 +106,10 @@ class _LoginPageState extends State<LoginPage> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              ForgotPasswordPage()),
+                                              const ForgotPasswordPage()),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Forgot your password?",
                                     style: TextStyle(
                                       color: Colors.grey,
@@ -118,31 +123,45 @@ class _LoginPageState extends State<LoginPage> {
                                 child: ElevatedButton(
                                   style: ThemeHelper().buttonStyle(),
                                   child: Padding(
-                                    padding:
-                                        EdgeInsets.fromLTRB(40, 10, 40, 10),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        40, 10, 40, 10),
                                     child: Text(
                                       'Sign In'.toUpperCase(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white),
                                     ),
                                   ),
-                                  onPressed: () {
+                                  onPressed: () async {
+                                    User? user = await loginUsingEmailPassword(
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                      context: context,
+                                    );
+                                    // ignore: avoid_print
+                                    print(user);
+                                    if (user != null) {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfilePage()));
+                                    } else {
+                                      emailController.text = "";
+                                      passwordController.text = "";
+                                    }
                                     //After successful login we will redirect to profile page. Let's create profile page now
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfilePage()));
                                   },
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                                margin:
+                                    const EdgeInsets.fromLTRB(10, 20, 10, 20),
                                 //child: Text('Don\'t have an account? Create'),
                                 child: Text.rich(TextSpan(children: [
-                                  TextSpan(text: "Don\'t have an account? "),
+                                  const TextSpan(
+                                      text: "Don't have an account? "),
                                   TextSpan(
                                     text: 'Create',
                                     recognizer: TapGestureRecognizer()
@@ -155,7 +174,9 @@ class _LoginPageState extends State<LoginPage> {
                                       },
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).accentColor),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
                                   ),
                                 ])),
                               ),

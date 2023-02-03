@@ -10,11 +10,11 @@ class ThemeHelper{
       hintText: hintText,
       fillColor: Colors.white,
       filled: true,
-      contentPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey)),
+      contentPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: const BorderSide(color: Colors.grey)),
       enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.grey.shade400)),
-      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
-      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: BorderSide(color: Colors.red, width: 2.0)),
+      errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: const BorderSide(color: Colors.red, width: 2.0)),
+      focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100.0), borderSide: const BorderSide(color: Colors.red, width: 2.0)),
     );
   }
 
@@ -40,7 +40,7 @@ class ThemeHelper{
 
     return BoxDecoration(
       boxShadow: [
-        BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+        const BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
       ],
       gradient: LinearGradient(
         begin: Alignment.topLeft,
@@ -63,7 +63,7 @@ class ThemeHelper{
           borderRadius: BorderRadius.circular(30.0),
         ),
       ),
-      minimumSize: MaterialStateProperty.all(Size(50, 50)),
+      minimumSize: MaterialStateProperty.all(const Size(50, 50)),
       backgroundColor: MaterialStateProperty.all(Colors.transparent),
       shadowColor: MaterialStateProperty.all(Colors.transparent),
     );
@@ -75,7 +75,7 @@ class ThemeHelper{
       content: Text(content),
       actions: [
         TextButton(
-          child: Text(
+          child: const Text(
             "OK",
             style: TextStyle(color: Colors.white),
           ),
