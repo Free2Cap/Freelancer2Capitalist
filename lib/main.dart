@@ -1,16 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/utils/constants.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'pages/splash_screen.dart';
 import 'firebase_options.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Constants.prefs = await SharedPreferences.getInstance();
   runApp(LoginUiApp());
 }
 
 class LoginUiApp extends StatelessWidget {
-  Color _primaryColor = HexColor('#DC54FE');
-  Color _accentColor = HexColor('#8A02AE');
+  final Color _primaryColor = HexColor('#DC54FE');
+  final Color _accentColor = HexColor('#8A02AE');
+
+  LoginUiApp({super.key});
 
   // Design color
   // Color _primaryColor= HexColor('#FFC867');
@@ -36,7 +42,7 @@ class LoginUiApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey)
             .copyWith(secondary: _accentColor),
       ),
-      home: Home(),
+      home: const Home(),
     );
   }
 }

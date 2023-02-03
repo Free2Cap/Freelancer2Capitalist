@@ -5,6 +5,7 @@ import 'package:freelancer2capitalist/pages/login_page.dart';
 import 'package:freelancer2capitalist/pages/splash_screen.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 
+import '../utils/constants.dart';
 import 'forgot_password_page.dart';
 import 'forgot_password_verification_page.dart';
 import 'registration_page.dart';
@@ -243,6 +244,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () {
                   FirebaseAuth.instance.signOut().then((value) {
+                    Constants.prefs?.setBool("loggedIn", false);
+
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

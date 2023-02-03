@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
-
+import 'package:freelancer2capitalist/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'forgot_password_page.dart';
 import 'profile_page.dart';
 import 'registration_page.dart';
@@ -142,6 +143,9 @@ class _LoginPageState extends State<LoginPage> {
                                     // ignore: avoid_print
                                     print(user);
                                     if (user != null) {
+                                      Constants.prefs
+                                          ?.setBool("loggedIn", true);
+
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

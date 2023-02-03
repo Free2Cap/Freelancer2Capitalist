@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/profile_page.dart';
 
+import '../utils/constants.dart';
 import 'login_page.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,32 +18,36 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool _isVisible = false;
 
-  _SplashScreenState(){
-
-    Timer(const Duration(milliseconds: 2000), (){
+  _SplashScreenState() {
+    Timer(const Duration(milliseconds: 2000), () {
       setState(() {
         Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false);
+            MaterialPageRoute(
+                builder: (context) =>
+                    Constants.prefs?.getBool("loggedIn") == true
+                        ? const ProfilePage()
+                        : const LoginPage()),
+            (route) => false);
       });
     });
 
-    Timer(
-      const Duration(milliseconds: 10),(){
-        setState(() {
-          _isVisible = true; // Now it is showing fade effect and navigating to Login page
-        });
-      }
-    );
-
+    Timer(const Duration(milliseconds: 10), () {
+      setState(() {
+        _isVisible =
+            true; // Now it is showing fade effect and navigating to Login page
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Theme.of(context).colorScheme.secondary, Theme.of(context).primaryColor],
+          colors: [
+            Theme.of(context).colorScheme.secondary,
+            Theme.of(context).primaryColor
+          ],
           begin: const FractionalOffset(0, 0),
           end: const FractionalOffset(1.0, 0.0),
           stops: [0.0, 1.0],
@@ -56,20 +62,22 @@ class _SplashScreenState extends State<SplashScreen> {
             height: 140.0,
             width: 140.0,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 2.0,
-                  offset: const Offset(5.0, 3.0),
-                  spreadRadius: 2.0,
-                )
-              ]
-            ),
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 2.0,
+                    offset: const Offset(5.0, 3.0),
+                    spreadRadius: 2.0,
+                  )
+                ]),
             child: const Center(
               child: ClipOval(
-                child: Icon(Icons.android_outlined, size: 128,), //put your logo here
+                child: Icon(
+                  Icons.android_outlined,
+                  size: 128,
+                ), //put your logo here
               ),
             ),
           ),
