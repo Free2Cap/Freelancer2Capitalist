@@ -1,56 +1,42 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:freelancer2capitalist/pages/complete_profile.dart';
-import 'package:freelancer2capitalist/pages/dashboard.dart';
-import 'package:freelancer2capitalist/pages/login.dart';
-import 'package:freelancer2capitalist/pages/registration.dart';
-
+import 'package:hexcolor/hexcolor.dart';
+import 'pages/splash_screen.dart';
 import 'firebase_options.dart';
 
 void main() {
-  runApp(MaterialApp(
-    title: "Freelancer2Capitalist",
-    home: const Home(),
-    theme: ThemeData(
-      primarySwatch: Colors.blue,
-    ),
-    routes: {
-      "/login": (context) => const Login(),
-      "/registration": (context) => const Registration(),
-      "/dashboard": (context) => const Dashboard(),
-    },
-  ));
+  runApp(LoginUiApp());
 }
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class LoginUiApp extends StatelessWidget {
+  Color _primaryColor = HexColor('#DC54FE');
+  Color _accentColor = HexColor('#8A02AE');
 
-  @override
-  State<Home> createState() => _HomeState();
-}
+  // Design color
+  // Color _primaryColor= HexColor('#FFC867');
+  // Color _accentColor= HexColor('#FF3CBD');
 
-class _HomeState extends State<Home> {
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    return firebaseApp;
-  }
+  // Our Logo Color
+  // Color _primaryColor= HexColor('#D44CF6');
+  // Color _accentColor= HexColor('#5E18C8');
 
+  // Our Logo Blue Color
+  //Color _primaryColor= HexColor('#651BD2');
+  //Color _accentColor= HexColor('#320181');
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: FutureBuilder(
-        future: _initializeFirebase(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return Complete_Profile();
-          }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
+    return MaterialApp(
+      title: 'Flutter Login UI',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: _primaryColor,
+        accentColor: _accentColor,
+        scaffoldBackgroundColor: Colors.grey.shade100,
+        primarySwatch: Colors.grey,
       ),
+      home: SplashScreen(title: 'Flutter Login UI'),
     );
   }
 }
