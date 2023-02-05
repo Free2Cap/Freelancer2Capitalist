@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/forgot_password_verification_page.dart';
 import 'package:freelancer2capitalist/pages/profile_page.dart';
+import 'package:freelancer2capitalist/pages/registration_page.dart';
+import 'package:freelancer2capitalist/pages_old/registration.dart';
 
 import '../utils/constants.dart';
 import 'login_page.dart';
@@ -23,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
       setState(() {
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (context) =>
+                builder: (context) => //const ForgotPasswordVerificationPage()),
                     Constants.prefs?.getBool("loggedIn") == true
                         ? const ProfilePage()
                         : const LoginPage()),

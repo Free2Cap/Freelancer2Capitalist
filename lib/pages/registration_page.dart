@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
+import 'package:freelancer2capitalist/pages/forgot_password_verification_page.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -226,20 +227,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               if (_formKey.currentState!.validate()) {
                                 if (passwordController.text ==
                                     confirmPasswordController.text) {
-                                  FirebaseAuth.instance
-                                      .createUserWithEmailAndPassword(
-                                          email: emailController.text,
-                                          password: passwordController.text)
-                                      .then((val) {
-                                    Constants.prefs?.setBool("loggedIn", true);
-                                    Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const ProfilePage()),
-                                        (Route<dynamic> route) => false);
-                                  }).onError((error, stackTrace) {
-                                    print("Error ${error.toString()}");
-                                  });
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ForgotPasswordVerificationPage(),
+                                          settings: RouteSettings(
+                                            arguments: [
+                                              emailController.text,
+                                              passwordController.text,
+                                            ],
+                                          )));
                                 } else {
                                   setState(() {
                                     errorText =

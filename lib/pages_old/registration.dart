@@ -89,7 +89,7 @@ class _RegistrationState extends State<Registration> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  Complete_Profile(),
+                                                  Complete_Profile(), 
                                               settings: RouteSettings(
                                                 arguments:
                                                     _emailController.text,
