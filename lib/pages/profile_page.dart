@@ -221,8 +221,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            const ForgotPasswordVerificationPage()),
+                        builder: (context) => const ProfilePage()),
+                            //const ForgotPasswordVerificationPage()),
                   );
                 },
               ),

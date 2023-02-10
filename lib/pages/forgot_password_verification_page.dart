@@ -1,21 +1,26 @@
 // ignore_for_file: avoid_print
 
-import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
+import 'package:freelancer2capitalist/pages/reset_password.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:email_otp/email_otp.dart';
 
 import '../utils/constants.dart';
+import 'login_page.dart';
 import 'profile_page.dart';
 import 'widgets/header_widget.dart';
 
 class ForgotPasswordVerificationPage extends StatefulWidget {
-  const ForgotPasswordVerificationPage({Key? key}) : super(key: key);
-
+  const ForgotPasswordVerificationPage(
+      {Key? key, required this.myAuth, required this.email, this.password})
+      : super(key: key);
+  final EmailOTP myAuth;
+  final String email;
+  final String? password;
   @override
   // ignore: library_private_types_in_public_api
   _ForgotPasswordVerificationPageState createState() =>
@@ -24,44 +29,38 @@ class ForgotPasswordVerificationPage extends StatefulWidget {
 
 class _ForgotPasswordVerificationPageState
     extends State<ForgotPasswordVerificationPage> {
-  EmailOTP myAuth = EmailOTP();
-  @override
-  void initState() {
-    super.initState();
-  }
+  // EmailOTP myAuth = EmailOTP();
 
-  Future<void> sendOtp(String email) async {
-    myAuth.setConfig(
-        appEmail: "freelancer2capitalist@gmail.com",
-        appName: "Freelancer2Capitalist",
-        userEmail: email,
-        otpLength: 4,
-        otpType: OTPType.digitsOnly);
-    try {
-      if (await myAuth.sendOTP() == true) {
-        print("otp sent");
-      } else {
-        print("falied");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
+  // Future<void> sendOtp(String email) async {
+  //   myAuth.setConfig(
+  //       appEmail: "freelancer2capitalist@gmail.com",
+  //       appName: "Freelancer2Capitalist",
+  //       userEmail: email,
+  //       otpLength: 4,
+  //       otpType: OTPType.digitsOnly);
+  //   try {
+  //     if (await myAuth.sendOTP() == true) {
+  //       print("otp sent");
+  //     } else {
+  //       print("falied");
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   final _formKey = GlobalKey<FormState>();
   bool _pinSuccess = false;
+  // ignore: prefer_typing_uninitialized_variables
   var otp;
-  String tapMe = 'Tap me to get code.';
-  final OtpFieldController _otpController = OtpFieldController();
 
   @override
   Widget build(BuildContext context) {
     double headerHeight = 300;
-    final List<dynamic> args =
-        ModalRoute.of(context)!.settings.arguments as List<dynamic>;
-    final String email = args[0];
-    final String password = args[1];
-    sendOtp(email);
+    // final List<dynamic> args =
+    //     ModalRoute.of(context)!.settings.arguments as List<dynamic>;
+    // final String password = args[1];
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
@@ -107,12 +106,7 @@ class _ForgotPasswordVerificationPageState
                             const SizedBox(
                               height: 10,
                             ),
-                            Text(
-                              tapMe,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
-                            )
+
                             // const Text(
 
                             // ),
@@ -125,14 +119,13 @@ class _ForgotPasswordVerificationPageState
                         child: Column(
                           children: <Widget>[
                             OTPTextField(
-                              controller: _otpController,
                               length: 4,
                               width: 300,
                               fieldWidth: 50,
                               style: const TextStyle(fontSize: 30),
                               textFieldAlignment: MainAxisAlignment.spaceAround,
                               fieldStyle: FieldStyle.underline,
-                              onCompleted: (pin) async {
+                              onCompleted: (pin) {
                                 try {
                                   setState(() {
                                     otp = pin;
@@ -157,7 +150,7 @@ class _ForgotPasswordVerificationPageState
                                   TextSpan(
                                     text: 'Resend',
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
+                                      ..onTap = () async {
                                         showDialog(
                                           context: context,
                                           builder: (BuildContext context) {
@@ -185,25 +178,36 @@ class _ForgotPasswordVerificationPageState
                                 style: ThemeHelper().buttonStyle(),
                                 onPressed: _pinSuccess
                                     ? () async {
-                                        await myAuth.verifyOTP(otp: otp);
-                                        FirebaseAuth.instance
-                                            .createUserWithEmailAndPassword(
-                                                email: email,
-                                                password: password)
-                                            .then((val) {
-                                          Constants.prefs
-                                              ?.setBool("loggedIn", true);
-                                          Navigator.of(
-                                                  context)
+                                        await widget.myAuth.verifyOTP(otp: otp);
+                                        if (widget.password != null) {
+                                          FirebaseAuth.instance
+                                              .createUserWithEmailAndPassword(
+                                            email: widget.email,
+                                            password: widget.password!,
+                                          )
+                                              .then((val) {
+                                            Constants.prefs
+                                                ?.setBool("loggedIn", true);
+                                            Navigator.of(context)
+                                                .pushAndRemoveUntil(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const ProfilePage()),
+                                                    (Route<dynamic> route) =>
+                                                        false);
+                                          }).onError((error, stackTrace) {
+                                            print("Error ${error.toString()}");
+                                          });
+                                        } else {
+                                          Navigator.of(context)
                                               .pushAndRemoveUntil(
                                                   MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const ProfilePage()),
+                                                      builder:
+                                                          (context) =>
+                                                              ResetPassword()),
                                                   (Route<dynamic> route) =>
                                                       false);
-                                        }).onError((error, stackTrace) {
-                                          print("Error ${error.toString()}");
-                                        });
+                                        }
                                       }
                                     : null,
                                 child: Padding(

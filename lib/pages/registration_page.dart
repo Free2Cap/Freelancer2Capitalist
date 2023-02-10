@@ -1,14 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
 import 'package:freelancer2capitalist/pages/forgot_password_verification_page.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
-
-import '../utils/constants.dart';
-import 'profile_page.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -18,6 +14,26 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
+  EmailOTP myAuth = EmailOTP();
+
+  Future<void> sendOtp(String email) async {
+    myAuth.setConfig(
+        appEmail: "freelancer2capitalist@gmail.com",
+        appName: "Freelancer2Capitalist",
+        userEmail: email,
+        otpLength: 4,
+        otpType: OTPType.digitsOnly);
+    try {
+      if (await myAuth.sendOTP() == true) {
+        print("otp sent");
+      } else {
+        print("falied");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   String errorText = '';
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
@@ -227,17 +243,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               if (_formKey.currentState!.validate()) {
                                 if (passwordController.text ==
                                     confirmPasswordController.text) {
+                                  sendOtp(emailController.text);
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const ForgotPasswordVerificationPage(),
-                                          settings: RouteSettings(
-                                            arguments: [
-                                              emailController.text,
-                                              passwordController.text,
-                                            ],
-                                          )));
+                                        builder: (context) =>
+                                            ForgotPasswordVerificationPage(
+                                          myAuth: myAuth,
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      ));
                                 } else {
                                   setState(() {
                                     errorText =
