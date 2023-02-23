@@ -61,6 +61,7 @@ class _LoginPageState extends State<LoginPage> {
       print(reslut.displayName);
       print(reslut.email);
       print(reslut.photoUrl);
+      print("done");
       bool? newuser = finalResult.additionalUserInfo?.isNewUser;
       print(reslut);
       if (newuser == false) {
