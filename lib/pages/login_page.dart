@@ -1,9 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
 import 'package:freelancer2capitalist/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:hexcolor/hexcolor.dart';
+import '../services/auth_service.dart';
 import 'forgot_password_page.dart';
 import 'profile_page.dart';
 import 'registration_page.dart';
@@ -39,6 +42,43 @@ class _LoginPageState extends State<LoginPage> {
     }
     return user;
   }
+
+  googleLogin() async {
+    print("googleLogin method Called");
+    GoogleSignIn _googleSignIn = GoogleSignIn();
+    try {
+      var reslut = await _googleSignIn.signIn();
+      if (reslut == null) {
+        return;
+      }
+
+      final userData = await reslut.authentication;
+      final credential = GoogleAuthProvider.credential(
+          accessToken: userData.accessToken, idToken: userData.idToken);
+      var finalResult =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      print("Result $reslut");
+      print(reslut.displayName);
+      print(reslut.email);
+      print(reslut.photoUrl);
+      bool? newuser = finalResult.additionalUserInfo?.isNewUser;
+      print(reslut);
+      if (newuser == false) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => ProfilePage()));
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }
+    } catch (error) {
+      print(error);
+    }
+  }
+
+  // Future<void> logout() async {
+  //   await GoogleSignIn().disconnect();
+  //   FirebaseAuth.instance.signOut();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +223,89 @@ class _LoginPageState extends State<LoginPage> {
                                             .secondary),
                                   ),
                                 ])),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.google,
+                                      size: 35,
+                                      color: HexColor("#EC2D2F"),
+                                    ),
+                                    onTap: googleLogin,
+                                    // AuthService().signInWithGodogle(), //{
+                                    // setState(() {
+
+                                    // showDialog(
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     return ThemeHelper().alartDialog(
+                                    //         "Google Plus",
+                                    //         "You tap on GooglePlus social icon.",
+                                    //         context);
+                                    //   },
+                                    // );
+                                    //},
+                                  ),
+                                  const SizedBox(
+                                    width: 30.0,
+                                  ),
+                                  GestureDetector(
+                                    child: Container(
+                                      padding: const EdgeInsets.all(0),
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        border: Border.all(
+                                            width: 5,
+                                            color: HexColor("#40ABF0")),
+                                        color: HexColor("#40ABF0"),
+                                      ),
+                                      child: FaIcon(
+                                        FontAwesomeIcons.twitter,
+                                        size: 23,
+                                        color: HexColor("#FFFFFF"),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return ThemeHelper().alartDialog(
+                                                "Twitter",
+                                                "You tap on Twitter social icon.",
+                                                context);
+                                          },
+                                        );
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(
+                                    width: 30.0,
+                                  ),
+                                  GestureDetector(
+                                    child: FaIcon(
+                                      FontAwesomeIcons.facebook,
+                                      size: 35,
+                                      color: HexColor("#3E529C"),
+                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return ThemeHelper().alartDialog(
+                                                "Facebook",
+                                                "You tap on Facebook social icon.",
+                                                context);
+                                          },
+                                        );
+                                      });
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           )),

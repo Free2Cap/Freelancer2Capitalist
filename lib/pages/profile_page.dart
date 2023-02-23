@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
 import 'package:freelancer2capitalist/pages/splash_screen.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../utils/constants.dart';
 import 'forgot_password_page.dart';
@@ -222,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => const ProfilePage()),
-                            //const ForgotPasswordVerificationPage()),
+                    //const ForgotPasswordVerificationPage()),
                   );
                 },
               ),
@@ -242,7 +243,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       fontSize: _drawerFontSize,
                       color: Theme.of(context).colorScheme.secondary),
                 ),
-                onTap: () {
+                onTap: () async {
+                  await GoogleSignIn().disconnect();
                   FirebaseAuth.instance.signOut().then((value) {
                     Constants.prefs?.setBool("loggedIn", false);
 
