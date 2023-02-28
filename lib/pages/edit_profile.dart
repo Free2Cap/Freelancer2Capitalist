@@ -84,8 +84,17 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
   void checkValues() {
     String fullname = fullNameController.text.trim();
+    print(fullname);
     if (fullname == "" || imageFile == null) {
-      print("please fill all the fields");
+      const snackdemo = SnackBar(
+        content: Text('please fill all the fields'),
+        backgroundColor: Colors.pinkAccent,
+        elevation: 10,
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(5),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackdemo);
+      log("please fill all the fields");
     } else {
       uploadData();
     }
@@ -94,7 +103,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
   void uploadData() async {
     UploadTask uploadTask = FirebaseStorage.instance
         .ref("profilepictures")
-        .child(widget.userModel!.uid.toString())
+        .child(widget.userModel.uid.toString())
         .putFile(imageFile!);
 
     TaskSnapshot snapshot = await uploadTask;
@@ -153,8 +162,9 @@ class _CompleteProfileState extends State<CompleteProfile> {
               const SizedBox(
                 height: 20,
               ),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: fullNameController,
+                decoration: const InputDecoration(
                   labelText: "Full Name",
                 ),
               ),

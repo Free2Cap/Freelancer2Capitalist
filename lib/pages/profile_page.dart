@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:freelancer2capitalist/pages/chat_pages/chat_user_card.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
 import 'package:freelancer2capitalist/pages/splash_screen.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
@@ -12,10 +13,10 @@ import 'forgot_password_page.dart';
 import 'registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  final UserModel? usermodel;
-  final User? firebaseUser;
+  final UserModel usermodel;
+  final User firebaseUser;
   const ProfilePage(
-      {super.key, this.usermodel, this.firebaseUser});
+      {super.key, required this.usermodel, required this.firebaseUser});
 
   @override
   State<StatefulWidget> createState() {
@@ -216,18 +217,21 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
-                  'Verification Page',
+                  'Chat Panel',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //       builder: (context) => const ProfilePage()),
-                  //   //const ForgotPasswordVerificationPage()),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatUserCard(
+                              userModel: widget.usermodel,
+                              firebaseUser: widget.firebaseUser,
+                            )),
+                    //const ForgotPasswordVerificationPage()),
+                  );
                 },
               ),
               Divider(
@@ -247,10 +251,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () async {
-                  await GoogleSignIn().disconnect();
+                  // await GoogleSignIn().disconnect();
                   FirebaseAuth.instance.signOut().then((value) {
                     Constants.prefs?.setBool("loggedIn", false);
-
+                    Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

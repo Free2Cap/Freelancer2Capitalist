@@ -195,7 +195,8 @@ class _LoginPageState extends State<LoginPage> {
                                     );
                                     // ignore: avoid_print
                                     // print(user);
-                                    log(user as String);
+                                    log(user.toString());
+
                                     if (user != null) {
                                       Constants.prefs
                                           ?.setBool("loggedIn", true);
@@ -215,6 +216,16 @@ class _LoginPageState extends State<LoginPage> {
                                                     usermodel: userModel,
                                                   )));
                                     } else {
+                                      const snackdemo = SnackBar(
+                                        content: Text(
+                                            'No user with such email found'),
+                                        backgroundColor: Colors.pinkAccent,
+                                        elevation: 10,
+                                        behavior: SnackBarBehavior.floating,
+                                        margin: EdgeInsets.all(5),
+                                      );
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(snackdemo);
                                       emailController.text = "";
                                       passwordController.text = "";
                                     }

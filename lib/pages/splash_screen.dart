@@ -1,18 +1,16 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/pages/profile_page.dart';
+import '../models/FirebaseHelper.dart';
 import '../models/user_model.dart';
 import '../utils/constants.dart';
 import 'login_page.dart';
 
 class SplashScreen extends StatefulWidget {
-  final User? firebaseUser;
-  final UserModel? userModel;
-  SplashScreen(
-      {Key? key, required this.title, this.firebaseUser, this.userModel})
-      : super(key: key);
+  SplashScreen({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -22,15 +20,38 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isVisible = false;
+  User? currentUser = FirebaseAuth.instance.currentUser;
+
+  UserModel? newUserModel;
+  Future<bool> checkLogIn() async {
+    bool checkLogInState = false;
+    if (currentUser != null) {
+      UserModel? thisUserModel =
+          await FirebaseHelper.getUserModelById(currentUser!.uid);
+      if (thisUserModel != null) {
+        newUserModel = thisUserModel;
+        checkLogInState = true;
+      } else {
+        checkLogInState = false;
+      }
+    } else {
+      checkLogInState = false;
+    }
+    return checkLogInState;
+  }
 
   _SplashScreenState() {
     Timer(const Duration(milliseconds: 2000), () {
       setState(() {
+        log(checkLogIn().toString());
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (context) => //ChatUserCard()),
-                    Constants.prefs?.getBool("loggedIn") == true
-                        ? ProfilePage()
+                    checkLogIn == true
+                        ? ProfilePage(
+                            usermodel: newUserModel!,
+                            firebaseUser: currentUser!,
+                          )
                         : const LoginPage()),
             (route) => false);
       });

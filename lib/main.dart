@@ -6,7 +6,9 @@ import 'package:hexcolor/hexcolor.dart';
 import 'pages/splash_screen.dart';
 import 'firebase_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
+var uuid = Uuid();
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Constants.prefs = await SharedPreferences.getInstance();
@@ -62,6 +64,7 @@ class _HomeState extends State<Home> {
     );
     return firebaseApp;
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

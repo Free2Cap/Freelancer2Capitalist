@@ -1,12 +1,15 @@
 class MessageModel {
+  String? messageId;
   String? sender;
   String? text;
   bool? seen;
   DateTime? createdon;
 
-  MessageModel({this.sender, this.text, this.seen, this.createdon});
+  MessageModel(
+      {this.messageId, this.sender, this.text, this.seen, this.createdon});
 
   MessageModel.fromMap(Map<String, dynamic> map) {
+    messageId = map["messageid"];
     sender = map["sender"];
     text = map["text"];
     seen = map["seen"];
@@ -15,6 +18,7 @@ class MessageModel {
 
   Map<String, dynamic> toMap() {
     return {
+      "messageid": messageId,
       "sender": sender,
       "text": text,
       "seen": seen,
