@@ -1,8 +1,12 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
+import 'package:freelancer2capitalist/models/user_model.dart';
 import 'package:freelancer2capitalist/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -44,36 +48,44 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   googleLogin() async {
-    print("googleLogin method Called");
-    GoogleSignIn _googleSignIn = GoogleSignIn();
-    try {
-      var reslut = await _googleSignIn.signIn();
-      if (reslut == null) {
-        return;
-      }
+    // print("googleLogin method Called");
+    // GoogleSignIn _googleSignIn = GoogleSignIn();
+    // // FirebaseAuth auth = FirebaseAuth.instance;
+    // // User? user;
+    // try {
+    //   var reslut = await _googleSignIn.signIn();
+    //   if (reslut == null) {
+    //     return;
+    //   }
 
-      final userData = await reslut.authentication;
-      final credential = GoogleAuthProvider.credential(
-          accessToken: userData.accessToken, idToken: userData.idToken);
-      var finalResult =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      print("Result $reslut");
-      print(reslut.displayName);
-      print(reslut.email);
-      print(reslut.photoUrl);
-      print("done");
-      bool? newuser = finalResult.additionalUserInfo?.isNewUser;
-      print(reslut);
-      if (newuser == false) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ProfilePage()));
-      } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      }
-    } catch (error) {
-      print(error);
-    }
+    //   final userData = await reslut.authentication;
+    //   final credential = GoogleAuthProvider.credential(
+    //       accessToken: userData.accessToken, idToken: userData.idToken);
+    //   var finalResult =
+    //       await FirebaseAuth.instance.signInWithCredential(credential);
+
+    //   print("Result $reslut");
+    //   print(reslut.displayName);
+    //   print(reslut.email);
+    //   print(reslut.photoUrl);
+    //   print("done");
+    //   bool? newuser = finalResult.additionalUserInfo?.isNewUser;
+    //   print(reslut);
+    //   if (newuser == false) {
+    //     Navigator.pushReplacement(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => ProfilePage(
+    //                   usermodel: null,
+    //                   firebaseUser: finalResult,
+    //                 )));
+    //   } else {
+    //     Navigator.pushReplacement(
+    //         context, MaterialPageRoute(builder: (context) => LoginPage()));
+    //   }
+    // } catch (error) {
+    //   print(error);
+    // }
   }
 
   // Future<void> logout() async {
@@ -182,16 +194,26 @@ class _LoginPageState extends State<LoginPage> {
                                       context: context,
                                     );
                                     // ignore: avoid_print
-                                    print(user);
+                                    // print(user);
+                                    log(user as String);
                                     if (user != null) {
                                       Constants.prefs
                                           ?.setBool("loggedIn", true);
-
+                                      DocumentSnapshot userData =
+                                          await FirebaseFirestore.instance
+                                              .collection('users')
+                                              .doc(user.uid)
+                                              .get();
+                                      UserModel userModel = UserModel.fromMap(
+                                          userData.data()
+                                              as Map<String, dynamic>);
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProfilePage()));
+                                              builder: (context) => ProfilePage(
+                                                    firebaseUser: user,
+                                                    usermodel: userModel,
+                                                  )));
                                     } else {
                                       emailController.text = "";
                                       passwordController.text = "";
@@ -234,7 +256,7 @@ class _LoginPageState extends State<LoginPage> {
                                       size: 35,
                                       color: HexColor("#EC2D2F"),
                                     ),
-                                    onTap: googleLogin,
+                                    onTap: () {}, //googleLogin,
                                     // AuthService().signInWithGodogle(), //{
                                     // setState(() {
 

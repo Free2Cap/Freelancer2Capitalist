@@ -6,13 +6,16 @@ import 'package:freelancer2capitalist/pages/splash_screen.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../models/user_model.dart';
 import '../utils/constants.dart';
 import 'forgot_password_page.dart';
-import 'forgot_password_verification_page.dart';
 import 'registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final UserModel? usermodel;
+  final User? firebaseUser;
+  const ProfilePage(
+      {super.key, this.usermodel, this.firebaseUser});
 
   @override
   State<StatefulWidget> createState() {
@@ -219,12 +222,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
-                    //const ForgotPasswordVerificationPage()),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //       builder: (context) => const ProfilePage()),
+                  //   //const ForgotPasswordVerificationPage()),
+                  // );
                 },
               ),
               Divider(

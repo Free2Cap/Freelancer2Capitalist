@@ -1,14 +1,9 @@
 // ignore_for_file: avoid_print
 
-import 'package:email_otp/email_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
-import 'package:freelancer2capitalist/pages/profile_page.dart';
-
-import 'forgot_password_verification_page.dart';
 import 'login_page.dart';
 import 'widgets/header_widget.dart';
 

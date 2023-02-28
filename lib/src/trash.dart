@@ -409,3 +409,131 @@
                         //     ),
                         //   ],
                         // ),
+
+                        // const SizedBox(height: 15.0),
+                        // FormField<bool>(
+                        //   builder: (state) {
+                        //     return Column(
+                        //       children: <Widget>[
+                        //         Row(
+                        //           children: <Widget>[
+                        //             Checkbox(
+                        //                 value: checkboxValue,
+                        //                 onChanged: (value) {
+                        //                   setState(() {
+                        //                     checkboxValue = value!;
+                        //                     state.didChange(value);
+                        //                   });
+                        //                 }),
+                        //             const Text(
+                        //               "I accept all terms and conditions.",
+                        //               style: TextStyle(color: Colors.grey),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         Container(
+                        //           alignment: Alignment.centerLeft,
+                        //           child: Text(
+                        //             state.errorText ?? '',
+                        //             textAlign: TextAlign.left,
+                        //             style: TextStyle(
+                        //               color:
+                        //                   Theme.of(context).colorScheme.error,
+                        //               fontSize: 12,
+                        //             ),
+                        //           ),
+                        //         )
+                        //       ],
+                        //     );
+                        //   },
+                        //   validator: (value) {
+                        //     if (!checkboxValue) {
+                        //       return 'You need to accept terms and conditions';
+                        //     } else {
+                        //       return null;
+                        //     }
+                        //   },
+                        // ),
+                        // Future<void> sendOtp(String email) async {
+  //   myAuth.setConfig(
+  //       appEmail: "freelancer2capitalist@gmail.com",
+  //       appName: "Freelancer2Capitalist",
+  //       userEmail: email,
+  //       otpLength: 4,
+  //       otpType: OTPType.digitsOnly);
+  //   try {
+  //     if (await myAuth.sendOTP() == true) {
+  //       print("otp sent");
+  //     } else {
+  //       print("falied");
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+  // EmailOTP myAuth = EmailOTP();
+// SizedBox(height: 20.0),
+                        // Container(
+                        //   child: TextFormField(
+                        //     decoration: ThemeHelper().textInputDecoration(
+                        //         "Mobile Number",
+                        //         "Enter your mobile number"),
+                        //     keyboardType: TextInputType.phone,
+                        //     validator: (val) {
+                        //       if(!(val!.isEmpty) && !RegExp(r"^(\d+)*$").hasMatch(val)){
+                        //         return "Enter a valid phone number";
+                        //       }
+                        //       return null;
+                        //     },
+                        //   ),
+                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        // ),
+                        //sendOtp(emailController.text);
+                        // GestureDetector(
+                        //   child: Stack(
+                        //     children: [
+                        //       Container(
+                        //         padding: const EdgeInsets.all(10),
+                        //         decoration: BoxDecoration(
+                        //           borderRadius: BorderRadius.circular(100),
+                        //           border:
+                        //               Border.all(width: 5, color: Colors.white),
+                        //           color: Colors.white,
+                        //           boxShadow: [
+                        //             const BoxShadow(
+                        //               color: Colors.black12,
+                        //               blurRadius: 20,
+                        //               offset: Offset(5, 5),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //         child: Icon(
+                        //           Icons.person,
+                        //           color: Colors.grey.shade300,
+                        //           size: 80.0,
+                        //         ),
+                        //       ),
+                        //       Container(
+                        //         padding:
+                        //             const EdgeInsets.fromLTRB(80, 80, 0, 0),
+                        //         child: Icon(
+                        //           Icons.add_circle,
+                        //           color: Colors.grey.shade700,
+                        //           size: 25.0,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(
+                        //   height: 30,
+                        // ),
+                        // Container(
+                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        //   child: TextFormField(
+                        //     decoration: ThemeHelper().textInputDecoration(
+                        //       'Name',
+                        //       'Enter your first name',
+                        //     ),
+                        //   ),
+                        // ),
