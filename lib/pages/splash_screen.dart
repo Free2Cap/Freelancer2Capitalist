@@ -21,33 +21,40 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool _isVisible = false;
   User? currentUser = FirebaseAuth.instance.currentUser;
-
   UserModel? newUserModel;
-  Future<bool> checkLogIn() async {
-    bool checkLogInState = false;
-    if (currentUser != null) {
-      UserModel? thisUserModel =
-          await FirebaseHelper.getUserModelById(currentUser!.uid);
-      if (thisUserModel != null) {
-        newUserModel = thisUserModel;
-        checkLogInState = true;
-      } else {
-        checkLogInState = false;
-      }
-    } else {
-      checkLogInState = false;
-    }
-    return checkLogInState;
-  }
+  // bool checkLogInState = false;
+
+  // Future<void> checkLogIn() async {
+  //   if (currentUser != null) {
+  //     UserModel? thisUserModel =
+  //         await FirebaseHelper.getUserModelById(currentUser!.uid);
+  //     if (thisUserModel != null) {
+  //       newUserModel = thisUserModel;
+  //       checkLogInState = true;
+  //     } else {
+  //       checkLogInState = false;
+  //     }
+  //   } else {
+  //     checkLogInState = false;
+  //   }
+  // }
 
   _SplashScreenState() {
-    Timer(const Duration(milliseconds: 2000), () {
+    Timer(const Duration(milliseconds: 2000), () async {
+      if (currentUser != null) {
+        newUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
+      }
       setState(() {
-        log(checkLogIn().toString());
+        // checkLogIn();
+        // var snackBar = SnackBar(
+        //   content: Text(newUserModel.toString()),
+        // );
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
                 builder: (context) => //ChatUserCard()),
-                    checkLogIn == true
+                    // checkLogInState == true
+                    currentUser != null
                         ? ProfilePage(
                             usermodel: newUserModel!,
                             firebaseUser: currentUser!,

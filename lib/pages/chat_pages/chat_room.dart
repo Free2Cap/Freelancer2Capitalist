@@ -80,81 +80,82 @@ class _ChatRoomState extends State<ChatRoom> {
           children: [
             //This is where chats will go
             Expanded(
-              child: Container(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                  ),
-                  child: StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .collection("chatrooms")
-                        .doc(widget.chatRoom.chatroomid)
-                        .collection('messages')
-                        .orderBy("createdon", descending: true)
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.active) {
-                        if (snapshot.hasData) {
-                          QuerySnapshot dataSnapshot =
-                              snapshot.data as QuerySnapshot;
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection("chatrooms")
+                      .doc(widget.chatRoom.chatroomid)
+                      .collection('messages')
+                      .orderBy("createdon", descending: true)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.active) {
+                      if (snapshot.hasData) {
+                        QuerySnapshot dataSnapshot =
+                            snapshot.data as QuerySnapshot;
 
-                          return ListView.builder(
-                            reverse: true,
-                            itemCount: dataSnapshot.docs.length,
-                            itemBuilder: (context, index) {
-                              MessageModel currentMessage =
-                                  MessageModel.fromMap(dataSnapshot.docs[index]
-                                      .data() as Map<String, dynamic>);
-                              return Row(
-                                mainAxisAlignment: (currentMessage.sender ==
-                                        widget.userModel.uid)
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 2,
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 10,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: (currentMessage.sender ==
-                                              widget.userModel.uid)
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(
-                                      currentMessage.text.toString(),
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    ),
+                        return ListView.builder(
+                          reverse: true,
+                          itemCount: dataSnapshot.docs.length,
+                          itemBuilder: (context, index) {
+                            MessageModel currentMessage = MessageModel.fromMap(
+                                dataSnapshot.docs[index].data()
+                                    as Map<String, dynamic>);
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: (currentMessage.sender ==
+                                      widget.userModel.uid)
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                    color: (currentMessage.sender ==
+                                            widget.userModel.uid)
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ],
-                              );
-                            },
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text("An error occured ${snapshot.error}");
-                        } else {
-                          return Center(
-                            child:
-                                Text("Say hi to ${widget.targetUser.fullname}"),
-                          );
-                        }
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          currentMessage.text.toString(),
+                                          style: const TextStyle(
+                                              color: Colors.white),
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("An error occured ${snapshot.error}");
                       } else {
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Center(
+                          child:
+                              Text("Say hi to ${widget.targetUser.fullname}"),
                         );
                       }
-                    },
-                  ),
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
               ),
             ),

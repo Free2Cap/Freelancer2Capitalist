@@ -58,6 +58,7 @@ dependencies:
   cloud_firestore: ^4.4.3
   image_cropper: ^3.0.1
   uuid: ^3.0.7
+  transparent_image: ^2.0.1
 
 
 dev_dependencies:

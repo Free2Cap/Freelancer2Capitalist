@@ -7,7 +7,7 @@ import 'package:freelancer2capitalist/pages/verify_email.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
-
+import '../utils/constants.dart';
 import '../models/user_model.dart';
 import 'login_page.dart';
 
@@ -42,6 +42,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
         email: email,
         fullname: "",
         profilepic: "",
+        bio: "",
+        location: "",
       );
       print(newUser);
       await FirebaseFirestore.instance
@@ -57,7 +59,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     )),
             (Route<dynamic> route) => false);
         print("new user created");
-        // Constants.prefs?.setBool("loggedIn", true);
+        Constants.prefs?.setBool("loggedIn", true);
       }).onError((error, stackTrace) {
         print("Error ${error.toString()}");
       });

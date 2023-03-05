@@ -6,11 +6,11 @@ import 'package:freelancer2capitalist/pages/login_page.dart';
 import 'package:freelancer2capitalist/pages/splash_screen.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:transparent_image/transparent_image.dart';
+
 import '../models/user_model.dart';
 import '../utils/constants.dart';
-import 'forgot_password_page.dart';
-import 'registration_page.dart';
+import '../pages/forgot_password_page.dart';
+import '../pages/registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final UserModel usermodel;
@@ -19,29 +19,14 @@ class ProfilePage extends StatefulWidget {
       {super.key, required this.usermodel, required this.firebaseUser});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<StatefulWidget> createState() {
+    return _ProfilePageState();
+  }
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final double _drawerIconSize = 24;
   final double _drawerFontSize = 17;
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _bioController = TextEditingController();
-  final _locationController = TextEditingController();
-  final _profilePicController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Set the initial values of the controllers
-    _nameController.text = widget.usermodel.fullname!;
-    _emailController.text = widget.usermodel.email!;
-    _bioController.text = widget.usermodel.bio!;
-    _locationController.text = widget.usermodel.location!;
-    _profilePicController.text = widget.usermodel.profilepic!;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -310,31 +295,18 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    child: ClipOval(
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey[300],
-                        radius: 40,
-                        child: _profilePicController.text.isNotEmpty
-                            ? FadeInImage.memoryNetwork(
-                                placeholder: kTransparentImage,
-                                image: _profilePicController.text.toString(),
-                                fit: BoxFit.cover,
-                              )
-                            : Icon(
-                                Icons.person,
-                                size: 80,
-                                color: Colors.grey.shade300,
-                              ),
-                      ),
+                    child: Icon(
+                      Icons.person,
+                      size: 80,
+                      color: Colors.grey.shade300,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  Text(
-                    _nameController.text.toString(),
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
+                  const Text(
+                    'Ms Anchal Singh',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 20,
@@ -375,33 +347,29 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 12, vertical: 4),
-                                          leading:
-                                              const Icon(Icons.my_location),
-                                          title: const Text("Location"),
-                                          subtitle: Text(_locationController
-                                              .text
-                                              .toString()),
+                                        const ListTile(
+                                          contentPadding: EdgeInsets.symmetric(
+                                              horizontal: 12, vertical: 4),
+                                          leading: Icon(Icons.my_location),
+                                          title: Text("Location"),
+                                          subtitle: Text("USA"),
                                         ),
-                                        ListTile(
-                                          leading: const Icon(Icons.email),
-                                          title: const Text("Email"),
-                                          subtitle: Text(
-                                              _emailController.text.toString()),
+                                        const ListTile(
+                                          leading: Icon(Icons.email),
+                                          title: Text("Email"),
+                                          subtitle:
+                                              Text("anchalsingh1029@gmail.com"),
                                         ),
-                                        // const ListTile(
-                                        //   leading: Icon(Icons.phone),
-                                        //   title: Text("Phone"),
-                                        //   subtitle: Text("9104601838"),
-                                        // ),
-                                        ListTile(
-                                          leading: const Icon(Icons.person),
-                                          title: const Text("About Me"),
+                                        const ListTile(
+                                          leading: Icon(Icons.phone),
+                                          title: Text("Phone"),
+                                          subtitle: Text("9104601838"),
+                                        ),
+                                        const ListTile(
+                                          leading: Icon(Icons.person),
+                                          title: Text("About Me"),
                                           subtitle: Text(
-                                              _bioController.text.toString()),
+                                              "This is a about me link and you can khow about me in this section."),
                                         ),
                                       ],
                                     ),

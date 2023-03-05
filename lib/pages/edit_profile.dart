@@ -110,9 +110,13 @@ class _CompleteProfileState extends State<CompleteProfile> {
 
     String imageUrl = await snapshot.ref.getDownloadURL();
     String fullname = fullNameController.text.trim();
+    String bio = '';
+    String location = '';
 
     widget.userModel.fullname = fullname;
     widget.userModel.profilepic = imageUrl;
+    widget.userModel.bio = bio;
+    widget.userModel.location = location;
 
     await FirebaseFirestore.instance
         .collection("users")
