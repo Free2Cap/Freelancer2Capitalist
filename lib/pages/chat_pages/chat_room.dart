@@ -1,11 +1,12 @@
 import 'dart:developer';
-
+import 'package:intl/intl.dart' as intl;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/main.dart';
+import 'package:freelancer2capitalist/models/UIHelper.dart';
 import 'package:freelancer2capitalist/models/chat_room_model.dart';
-
+import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
 import '../../models/message_model.dart';
 import '../../models/user_model.dart';
 
@@ -49,6 +50,7 @@ class _ChatRoomState extends State<ChatRoom> {
           .set(newMessage.toMap())
           .then((value) => log("message sent"));
       widget.chatRoom.lastMessage = msg;
+      widget.chatRoom.sequnece = DateTime.now();
       FirebaseFirestore.instance
           .collection('chatrooms')
           .doc(widget.chatRoom.chatroomid)
@@ -74,6 +76,26 @@ class _ChatRoomState extends State<ChatRoom> {
             Text(widget.targetUser.fullname.toString()),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: InkWell(
+              onTap: () =>
+                  // CallUtils.dial(
+                  //   from: widget.userModel,
+                  //   to: widget.targetUser,
+                  //   context: context,
+                  // ),
+                  {
+                // Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (_) => const VideoCallScreen())), //{
+                UIHelper.showAlertDialog(
+                    context, 'Video Call', 'This will be new workspace'),
+              },
+              child: const Icon(Icons.video_call),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -96,48 +118,106 @@ class _ChatRoomState extends State<ChatRoom> {
                       if (snapshot.hasData) {
                         QuerySnapshot dataSnapshot =
                             snapshot.data as QuerySnapshot;
-
+                        MessageModel? _previousMessage;
                         return ListView.builder(
                           reverse: true,
                           itemCount: dataSnapshot.docs.length,
                           itemBuilder: (context, index) {
-                            MessageModel currentMessage = MessageModel.fromMap(
-                                dataSnapshot.docs[index].data()
-                                    as Map<String, dynamic>);
+                            final currentMessage = MessageModel.fromMap(
+                              dataSnapshot.docs[index].data()
+                                  as Map<String, dynamic>,
+                            );
+                            final isCurrentUser =
+                                currentMessage.sender == widget.userModel.uid;
+                            final showAvatar = _previousMessage == null ||
+                                _previousMessage!.sender !=
+                                    currentMessage.sender;
+
+                            _previousMessage = currentMessage;
+
                             return Row(
                               mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: (currentMessage.sender ==
-                                      widget.userModel.uid)
+                              mainAxisAlignment: isCurrentUser
                                   ? MainAxisAlignment.end
                                   : MainAxisAlignment.start,
                               children: [
-                                Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 2),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: (currentMessage.sender ==
-                                            widget.userModel.uid)
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                    borderRadius: BorderRadius.circular(10),
+                                if (!isCurrentUser && showAvatar)
+                                  CustomCircleAvatar(
+                                    imageUrl:
+                                        widget.targetUser.profilepic.toString(),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
+                                const SizedBox(width: 5),
+                                Column(
+                                  crossAxisAlignment: isCurrentUser
+                                      ? CrossAxisAlignment.end
+                                      : CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        color: isCurrentUser
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: SizedBox(
+                                        width: (() {
+                                          final textSpan = TextSpan(
+                                              text: currentMessage.text
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white));
+                                          final textPainter = TextPainter(
+                                              text: textSpan,
+                                              maxLines: 1,
+                                              textDirection: TextDirection.ltr);
+                                          textPainter.layout(
+                                              minWidth: 0,
+                                              maxWidth: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7);
+                                          return textPainter.width <=
+                                                  MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.7
+                                              ? textPainter.width
+                                              : MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7;
+                                        })(),
                                         child: Text(
                                           currentMessage.text.toString(),
                                           style: const TextStyle(
                                               color: Colors.white),
-                                          overflow: TextOverflow.visible,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Text(
+                                      intl.DateFormat('HH:mm')
+                                          .format(currentMessage.createdon!),
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                const SizedBox(width: 5),
+                                if (isCurrentUser && showAvatar)
+                                  CustomCircleAvatar(
+                                    imageUrl:
+                                        widget.userModel.profilepic.toString(),
+                                  ),
                               ],
                             );
                           },

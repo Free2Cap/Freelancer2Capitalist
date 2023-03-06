@@ -7,6 +7,7 @@ import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/search_page.dart';
 
 import '../../models/FirebaseHelper.dart';
+import '../../models/UIHelper.dart';
 import '../../models/user_model.dart';
 import 'chat_room.dart';
 
@@ -33,7 +34,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
           child: StreamBuilder(
             stream: FirebaseFirestore.instance
                 .collection("chatrooms")
-                .where("participants.${widget.userModel.uid}", isEqualTo: true)
+                .where("users", arrayContains: widget.userModel.uid)
+                .orderBy('sequnece', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.active) {
@@ -126,6 +128,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          //UIHelper.showLoadingDialog(context, "Loading...");
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return SearchPage(
                 userModel: widget.userModel, firebaseUser: widget.firebaseUser);
