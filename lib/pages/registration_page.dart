@@ -44,6 +44,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
         profilepic: "",
         bio: "",
         location: "",
+        lastSeen: DateTime.now(),
+        isActive: true,
       );
       print(newUser);
       await FirebaseFirestore.instance

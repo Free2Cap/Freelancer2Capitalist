@@ -1,5 +1,12 @@
+import 'dart:async';
+import 'dart:developer' as dev;
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/chat_pages/chat_room.dart';
+import 'package:freelancer2capitalist/utils/applifecycle.dart';
 import 'package:freelancer2capitalist/utils/constants.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'pages/splash_screen.dart';
@@ -8,9 +15,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 var uuid = Uuid();
+
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Constants.prefs = await SharedPreferences.getInstance();
+
+  // Initialize Firebase
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    dev.log('Error initializing Firebase: $e');
+  }
+
+  // Register the app lifecycle observer
+  WidgetsBinding.instance.addObserver(AppLifecycleObserver());
+
   runApp(LoginUiApp());
 }
 
@@ -18,19 +37,7 @@ class LoginUiApp extends StatelessWidget {
   final Color _primaryColor = HexColor('#DC54FE');
   final Color _accentColor = HexColor('#8A02AE');
 
-  LoginUiApp({super.key});
-
-  // Design color
-  // Color _primaryColor= HexColor('#FFC867');
-  // Color _accentColor= HexColor('#FF3CBD');
-
-  // Our Logo Color
-  // Color _primaryColor= HexColor('#D44CF6');
-  // Color _accentColor= HexColor('#5E18C8');
-
-  // Our Logo Blue Color
-  //Color _primaryColor= HexColor('#651BD2');
-  //Color _accentColor= HexColor('#320181');
+  LoginUiApp({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -50,7 +57,7 @@ class LoginUiApp extends StatelessWidget {
 }
 
 class Home extends StatefulWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -62,6 +69,13 @@ class _HomeState extends State<Home> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     return firebaseApp;
+  }
+
+  @override
+  void dispose() {
+    // Unregister the app lifecycle observer
+    WidgetsBinding.instance.removeObserver(AppLifecycleObserver());
+    super.dispose();
   }
 
   @override

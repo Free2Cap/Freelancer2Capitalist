@@ -9,6 +9,7 @@ import 'package:freelancer2capitalist/pages/chat_pages/search_page.dart';
 import '../../models/FirebaseHelper.dart';
 import '../../models/UIHelper.dart';
 import '../../models/user_model.dart';
+import '../../utils/applifecycle.dart';
 import 'chat_room.dart';
 
 class ChatUserCard extends StatefulWidget {
@@ -22,6 +23,8 @@ class ChatUserCard extends StatefulWidget {
 }
 
 class _ChatUserCardState extends State<ChatUserCard> {
+  final ChatVisitedNotifier _isChatRoomVisited = ChatVisitedNotifier(false);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,13 +69,17 @@ class _ChatUserCardState extends State<ChatUserCard> {
                               ConnectionState.done) {
                             if (userData.data != null) {
                               UserModel targetUser = userData.data as UserModel;
-
+                              final ChatVisitedNotifierId _isChatRoomVisitedId =
+                                  ChatVisitedNotifierId(
+                                      widget.userModel.uid.toString());
                               return ListTile(
                                 onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) {
                                       return ChatRoom(
+                                        chatVisitedNotifierId: _isChatRoomVisitedId,
+                                        chatVisitedNotifier: _isChatRoomVisited,
                                         firebaseUser: widget.firebaseUser,
                                         userModel: widget.userModel,
                                         targetUser: targetUser,

@@ -1,4 +1,6 @@
 import 'dart:developer';
+import 'dart:typed_data';
+import 'dart:ui';
 import 'package:intl/intl.dart' as intl;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -9,8 +11,11 @@ import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
 import '../../models/message_model.dart';
 import '../../models/user_model.dart';
+import '../../utils/applifecycle.dart';
 
 class ChatRoom extends StatefulWidget {
+  final ChatVisitedNotifier chatVisitedNotifier;
+  final ChatVisitedNotifierId chatVisitedNotifierId;
   final UserModel targetUser;
   final ChatRoomModel chatRoom;
   final UserModel userModel;
@@ -20,7 +25,9 @@ class ChatRoom extends StatefulWidget {
       required this.targetUser,
       required this.chatRoom,
       required this.userModel,
-      required this.firebaseUser});
+      required this.firebaseUser,
+      required this.chatVisitedNotifier,
+      required this.chatVisitedNotifierId});
 
   @override
   State<ChatRoom> createState() => _ChatRoomState();
@@ -59,8 +66,31 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  void seenCheck() async {
+    QuerySnapshot querySnapshots = await FirebaseFirestore.instance
+        .collection("chatrooms")
+        .doc(widget.chatRoom.chatroomid)
+        .collection("messages")
+        .where('sender', isEqualTo: widget.targetUser.uid)
+        .get();
+    if (widget.chatVisitedNotifier.value &&
+        widget.chatVisitedNotifierId.value == widget.userModel.uid) {
+      for (DocumentSnapshot documentSnapshot in querySnapshots.docs) {
+        documentSnapshot.reference.update({'seen': true});
+      }
+    }
+    log(widget.chatVisitedNotifier.value.toString());
+  }
+
+  @override
+  void dispose() {
+    widget.chatVisitedNotifier.value = false;
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    widget.chatVisitedNotifier.value = true;
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -73,7 +103,57 @@ class _ChatRoomState extends State<ChatRoom> {
             const SizedBox(
               width: 10,
             ),
-            Text(widget.targetUser.fullname.toString()),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.targetUser.fullname.toString()),
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(widget.targetUser.uid)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DocumentSnapshot> snapshot) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Text('Loading...');
+                    }
+                    final targetUserDoc = snapshot.data!;
+                    final isActive = targetUserDoc.get("isActive");
+                    final lastSeen = targetUserDoc.get("lastseen").toDate();
+                    final now = DateTime.now();
+                    final difference = now.difference(lastSeen);
+
+                    return Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: isActive
+                            ? Colors.green
+                            : difference < const Duration(minutes: 10)
+                                ? Colors.orange
+                                : Colors.red.shade800,
+                      ),
+                      child: Text(
+                        isActive
+                            ? 'Active...'
+                            : difference >= const Duration(hours: 24)
+                                ? "Last Seen at ${intl.DateFormat("dd-MM-yyyy").format(lastSeen).toString()}"
+                                : difference < const Duration(minutes: 10)
+                                    ? "Inactive..."
+                                    : "Last Seen at ${intl.DateFormat("hh:mm a").format(lastSeen).toString()}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
           ],
         ),
         actions: [
@@ -119,6 +199,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         QuerySnapshot dataSnapshot =
                             snapshot.data as QuerySnapshot;
                         MessageModel? _previousMessage;
+                        seenCheck();
                         return ListView.builder(
                           reverse: true,
                           itemCount: dataSnapshot.docs.length,
@@ -132,7 +213,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             final showAvatar = _previousMessage == null ||
                                 _previousMessage!.sender !=
                                     currentMessage.sender;
-
+                            // seenCheck();
                             _previousMessage = currentMessage;
 
                             return Row(
@@ -141,11 +222,11 @@ class _ChatRoomState extends State<ChatRoom> {
                                   ? MainAxisAlignment.end
                                   : MainAxisAlignment.start,
                               children: [
-                                if (!isCurrentUser && showAvatar)
-                                  CustomCircleAvatar(
-                                    imageUrl:
-                                        widget.targetUser.profilepic.toString(),
-                                  ),
+                                // if (!isCurrentUser && showAvatar)
+                                //   CustomCircleAvatar(
+                                //     imageUrl:
+                                //         widget.targetUser.profilepic.toString(),
+                                //   ),
                                 const SizedBox(width: 5),
                                 Column(
                                   crossAxisAlignment: isCurrentUser
@@ -167,39 +248,62 @@ class _ChatRoomState extends State<ChatRoom> {
                                                 .secondary,
                                         borderRadius: BorderRadius.circular(10),
                                       ),
-                                      child: SizedBox(
-                                        width: (() {
-                                          final textSpan = TextSpan(
-                                              text: currentMessage.text
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  color: Colors.white));
-                                          final textPainter = TextPainter(
-                                              text: textSpan,
-                                              maxLines: 1,
-                                              textDirection: TextDirection.ltr);
-                                          textPainter.layout(
-                                              minWidth: 0,
-                                              maxWidth: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.7);
-                                          return textPainter.width <=
-                                                  MediaQuery.of(context)
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: (() {
+                                              final textSpan = TextSpan(
+                                                  text: currentMessage.text
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      color: Colors.white));
+                                              final textPainter = TextPainter(
+                                                  text: textSpan,
+                                                  maxLines: 1,
+                                                  textDirection:
+                                                      TextDirection.ltr);
+                                              textPainter.layout(
+                                                  minWidth: 0,
+                                                  maxWidth:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.7);
+                                              return textPainter.width <=
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.7
+                                                  ? textPainter.width
+                                                  : MediaQuery.of(context)
                                                           .size
                                                           .width *
-                                                      0.7
-                                              ? textPainter.width
-                                              : MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.7;
-                                        })(),
-                                        child: Text(
-                                          currentMessage.text.toString(),
-                                          style: const TextStyle(
-                                              color: Colors.white),
-                                        ),
+                                                      0.7;
+                                            })(),
+                                            child: Text(
+                                              currentMessage.text.toString(),
+                                              style: const TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          if (isCurrentUser)
+                                            IconTheme(
+                                              data: IconThemeData(
+                                                color: !currentMessage.seen!
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .background
+                                                    : const Color.fromARGB(
+                                                        255, 0, 0, 255),
+                                                size: 24.0,
+                                              ),
+                                              child: const Icon(
+                                                  Icons.check_circle_rounded),
+                                            )
+                                        ],
                                       ),
                                     ),
                                     Text(
@@ -213,11 +317,11 @@ class _ChatRoomState extends State<ChatRoom> {
                                   ],
                                 ),
                                 const SizedBox(width: 5),
-                                if (isCurrentUser && showAvatar)
-                                  CustomCircleAvatar(
-                                    imageUrl:
-                                        widget.userModel.profilepic.toString(),
-                                  ),
+                                // if (isCurrentUser && showAvatar)
+                                //   CustomCircleAvatar(
+                                //     imageUrl:
+                                //         widget.userModel.profilepic.toString(),
+                                //   ),
                               ],
                             );
                           },

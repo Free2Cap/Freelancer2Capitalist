@@ -9,6 +9,7 @@ import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/chat_room.dart';
 
 import '../../models/user_model.dart';
+import '../../utils/applifecycle.dart';
 
 class SearchPage extends StatefulWidget {
   final UserModel userModel;
@@ -22,6 +23,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final ChatVisitedNotifier _isChatRoomVisited = ChatVisitedNotifier(false);
   TextEditingController searchController = TextEditingController();
 
   Future<ChatRoomModel?> getChatRoomModel(UserModel targetUser) async {
@@ -110,7 +112,8 @@ class _SearchPageState extends State<SearchPage> {
                           dataSnapshot.docs[0].data() as Map<String, dynamic>;
 
                       UserModel searchedUser = UserModel.fromMap(userMap);
-
+                      final ChatVisitedNotifierId _isChatRoomVisitedId =
+                          ChatVisitedNotifierId(widget.userModel.uid.toString());
                       return ListTile(
                         onTap: () async {
                           ChatRoomModel? chatroomModel =
@@ -121,6 +124,8 @@ class _SearchPageState extends State<SearchPage> {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
                               return ChatRoom(
+                                chatVisitedNotifierId: _isChatRoomVisitedId,
+                                chatVisitedNotifier: _isChatRoomVisited,
                                 targetUser: searchedUser,
                                 userModel: widget.userModel,
                                 firebaseUser: widget.firebaseUser,
