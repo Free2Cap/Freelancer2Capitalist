@@ -271,7 +271,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () async {
                   // await GoogleSignIn().disconnect();
                   FirebaseAuth.instance.signOut().then((value) {
-                    Constants.prefs?.setBool("loggedIn", false);
                     Navigator.popUntil(context, (route) => route.isFirst);
                     Navigator.pushReplacement(
                       context,
@@ -317,7 +316,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.grey[300],
                         radius: 40,
-                        child: _profilePicController.text.isNotEmpty
+                        child: _profilePicController.text != ''
                             ? FadeInImage.memoryNetwork(
                                 placeholder: kTransparentImage,
                                 image: _profilePicController.text.toString(),

@@ -11,6 +11,7 @@ import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
 import '../../models/message_model.dart';
 import '../../models/user_model.dart';
+import '../../utils/apphelper.dart';
 import '../../utils/applifecycle.dart';
 
 class ChatRoom extends StatefulWidget {
@@ -35,7 +36,8 @@ class ChatRoom extends StatefulWidget {
 
 class _ChatRoomState extends State<ChatRoom> {
   TextEditingController messageController = TextEditingController();
-
+  final Debouncer _textDebouncer = Debouncer(milliseconds: 500);
+  bool _isTyping = false;
   void sendMessage() async {
     String msg = messageController.text.trim();
     messageController.clear();
@@ -66,6 +68,20 @@ class _ChatRoomState extends State<ChatRoom> {
     }
   }
 
+  void _checkTyping() async {
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection("users")
+        .doc(widget.userModel.uid);
+
+    try {
+      _isTyping
+          ? await docRef.update({"isTyping": true})
+          : await docRef.update({"isTyping": false});
+    } on FirebaseException catch (e) {
+      log(e.message.toString());
+    }
+  }
+
   void seenCheck() async {
     QuerySnapshot querySnapshots = await FirebaseFirestore.instance
         .collection("chatrooms")
@@ -79,13 +95,29 @@ class _ChatRoomState extends State<ChatRoom> {
         documentSnapshot.reference.update({'seen': true});
       }
     }
-    log(widget.chatVisitedNotifier.value.toString());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    messageController.addListener(_onTextChanged);
   }
 
   @override
   void dispose() {
     widget.chatVisitedNotifier.value = false;
+    messageController.dispose();
     super.dispose();
+  }
+
+  void _onTextChanged() {
+    _textDebouncer.run(() {
+      final text = messageController.text.trim();
+      setState(() {
+        _isTyping = text.isNotEmpty;
+      });
+      _checkTyping();
+    });
   }
 
   @override
@@ -123,6 +155,7 @@ class _ChatRoomState extends State<ChatRoom> {
                     final targetUserDoc = snapshot.data!;
                     final isActive = targetUserDoc.get("isActive");
                     final lastSeen = targetUserDoc.get("lastseen").toDate();
+                    final isTyping = targetUserDoc.get("isTyping");
                     final now = DateTime.now();
                     final difference = now.difference(lastSeen);
 
@@ -130,20 +163,24 @@ class _ChatRoomState extends State<ChatRoom> {
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: isActive
-                            ? Colors.green
-                            : difference < const Duration(minutes: 10)
-                                ? Colors.orange
-                                : Colors.red.shade800,
+                        color: isTyping
+                            ? const Color.fromARGB(255, 24, 129, 27)
+                            : isActive
+                                ? Colors.green
+                                : difference < const Duration(minutes: 10)
+                                    ? Colors.orange
+                                    : Colors.red.shade800,
                       ),
                       child: Text(
-                        isActive
-                            ? 'Active...'
-                            : difference >= const Duration(hours: 24)
-                                ? "Last Seen at ${intl.DateFormat("dd-MM-yyyy").format(lastSeen).toString()}"
-                                : difference < const Duration(minutes: 10)
-                                    ? "Inactive..."
-                                    : "Last Seen at ${intl.DateFormat("hh:mm a").format(lastSeen).toString()}",
+                        isTyping
+                            ? 'Typing...'
+                            : isActive
+                                ? 'Active...'
+                                : difference >= const Duration(hours: 24)
+                                    ? "Last Seen at ${intl.DateFormat("dd-MM-yyyy").format(lastSeen).toString()}"
+                                    : difference < const Duration(minutes: 10)
+                                        ? "Inactive..."
+                                        : "Last Seen at ${intl.DateFormat("hh:mm a").format(lastSeen).toString()}",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 15,
@@ -200,6 +237,7 @@ class _ChatRoomState extends State<ChatRoom> {
                             snapshot.data as QuerySnapshot;
                         MessageModel? _previousMessage;
                         seenCheck();
+                        _checkTyping();
                         return ListView.builder(
                           reverse: true,
                           itemCount: dataSnapshot.docs.length,

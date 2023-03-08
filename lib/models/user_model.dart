@@ -7,6 +7,7 @@ class UserModel {
   String? location;
   DateTime? lastSeen;
   bool? isActive;
+  bool? isTyping;
 
   UserModel(
       {this.uid,
@@ -16,7 +17,8 @@ class UserModel {
       this.bio,
       this.location,
       this.lastSeen,
-      this.isActive});
+      this.isActive,
+      this.isTyping});
 
   UserModel.fromMap(Map<String, dynamic> map) {
     uid = map["uid"];
@@ -27,6 +29,7 @@ class UserModel {
     location = map["location"];
     lastSeen = map["lastseen"].toDate();
     isActive = map["isActive"];
+    isTyping = map["isTyping"];
   }
 
   Map<String, dynamic> toMap() {
@@ -39,6 +42,7 @@ class UserModel {
       "location": location,
       "lastseen": lastSeen,
       "isActive": isActive,
+      "isTyping": isTyping,
     };
   }
 }
