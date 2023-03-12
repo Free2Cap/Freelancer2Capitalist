@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/pages/profile_page.dart';
@@ -43,6 +44,11 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(milliseconds: 2000), () async {
       if (currentUser != null) {
         newUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser!.uid)
+            .update({'isActive': true});
       }
       setState(() {
         // checkLogIn();

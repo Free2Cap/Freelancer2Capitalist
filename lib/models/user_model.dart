@@ -4,10 +4,11 @@ class UserModel {
   String? email;
   String? profilepic;
   String? bio;
-  String? location;
   DateTime? lastSeen;
   bool? isActive;
   bool? isTyping;
+  String? gender;
+  String? userType;
 
   UserModel(
       {this.uid,
@@ -15,10 +16,11 @@ class UserModel {
       this.email,
       this.profilepic,
       this.bio,
-      this.location,
       this.lastSeen,
       this.isActive,
-      this.isTyping});
+      this.isTyping,
+      this.gender,
+      this.userType});
 
   UserModel.fromMap(Map<String, dynamic> map) {
     uid = map["uid"];
@@ -26,10 +28,11 @@ class UserModel {
     email = map["email"];
     profilepic = map["profilepic"];
     bio = map["bio"];
-    location = map["location"];
     lastSeen = map["lastseen"].toDate();
     isActive = map["isActive"];
     isTyping = map["isTyping"];
+    gender = map["gender"];
+    userType = map["userType"];
   }
 
   Map<String, dynamic> toMap() {
@@ -39,10 +42,11 @@ class UserModel {
       "email": email,
       "profilepic": profilepic,
       "bio": bio,
-      "location": location,
       "lastseen": lastSeen,
       "isActive": isActive,
       "isTyping": isTyping,
+      "userType": userType,
+      "gender": gender,
     };
   }
 }

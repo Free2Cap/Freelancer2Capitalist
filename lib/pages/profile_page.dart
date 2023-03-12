@@ -1,19 +1,14 @@
-import 'dart:developer';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/chat_user_card.dart';
+import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
-import 'package:freelancer2capitalist/pages/splash_screen.dart';
+import 'package:freelancer2capitalist/pages/project/firm_inforamtion.dart';
+import 'package:freelancer2capitalist/pages/project/project_list.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../models/user_model.dart';
-import '../utils/constants.dart';
-import 'forgot_password_page.dart';
-import 'registration_page.dart';
 
 class ProfilePage extends StatefulWidget {
   final UserModel usermodel;
@@ -28,12 +23,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final double _drawerIconSize = 24;
   final double _drawerFontSize = 17;
-  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _bioController = TextEditingController();
-  final _locationController = TextEditingController();
   final _profilePicController = TextEditingController();
+  final _userTypeController = TextEditingController();
 
   @override
   void initState() {
@@ -42,8 +36,8 @@ class _ProfilePageState extends State<ProfilePage> {
     _nameController.text = widget.usermodel.fullname!;
     _emailController.text = widget.usermodel.email!;
     _bioController.text = widget.usermodel.bio!;
-    _locationController.text = widget.usermodel.location!;
     _profilePicController.text = widget.usermodel.profilepic!;
+    _userTypeController.text = widget.usermodel.userType!;
   }
 
   @override
@@ -134,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   alignment: Alignment.bottomLeft,
                   child: const Text(
-                    "DASHBOARD",
+                    "Free2Cap",
                     style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
@@ -142,95 +136,95 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.screen_lock_landscape_rounded,
+              //     size: _drawerIconSize,
+              //     color: Theme.of(context).colorScheme.secondary,
+              //   ),
+              //   title: Text(
+              //     'Splash Screen',
+              //     style: TextStyle(
+              //         fontSize: 17,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) =>
+              //                 SplashScreen(title: "Splash Screen")));
+              //   },
+              // ),
+              // ListTile(
+              //   leading: Icon(Icons.login_rounded,
+              //       size: _drawerIconSize,
+              //       color: Theme.of(context).colorScheme.secondary),
+              //   title: Text(
+              //     'Login Page',
+              //     style: TextStyle(
+              //         fontSize: _drawerFontSize,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const LoginPage()),
+              //     );
+              //   },
+              // ),
+              // Divider(
+              //   color: Theme.of(context).primaryColor,
+              //   height: 1,
+              // ),
+              // ListTile(
+              //   leading: Icon(Icons.person_add_alt_1,
+              //       size: _drawerIconSize,
+              //       color: Theme.of(context).colorScheme.secondary),
+              //   title: Text(
+              //     'Registration Page',
+              //     style: TextStyle(
+              //         fontSize: _drawerFontSize,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const RegistrationPage()),
+              //     );
+              //   },
+              // ),
+              // Divider(
+              //   color: Theme.of(context).primaryColor,
+              //   height: 1,
+              // ),
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.password_rounded,
+              //     size: _drawerIconSize,
+              //     color: Theme.of(context).colorScheme.secondary,
+              //   ),
+              //   title: Text(
+              //     'Forgot Password Page',
+              //     style: TextStyle(
+              //         fontSize: _drawerFontSize,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //           builder: (context) => const ForgotPasswordPage()),
+              //     );
+              //   },
+              // ),
+              // Divider(
+              //   color: Theme.of(context).primaryColor,
+              //   height: 1,
+              // ),
               ListTile(
                 leading: Icon(
-                  Icons.screen_lock_landscape_rounded,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Splash Screen',
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              SplashScreen(title: "Splash Screen")));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.login_rounded,
-                    size: _drawerIconSize,
-                    color: Theme.of(context).colorScheme.secondary),
-                title: Text(
-                  'Login Page',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(Icons.person_add_alt_1,
-                    size: _drawerIconSize,
-                    color: Theme.of(context).colorScheme.secondary),
-                title: Text(
-                  'Registration Page',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegistrationPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.password_rounded,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Forgot Password Page',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ForgotPasswordPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.verified_user_sharp,
+                  Icons.chat,
                   size: _drawerIconSize,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
@@ -341,9 +335,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Freelancer',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    _userTypeController.text.toString(),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 10,
@@ -377,17 +372,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        ListTile(
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 12, vertical: 4),
-                                          leading:
-                                              const Icon(Icons.my_location),
-                                          title: const Text("Location"),
-                                          subtitle: Text(_locationController
-                                              .text
-                                              .toString()),
-                                        ),
+                                        // const ListTile(
+                                        //   contentPadding:
+                                        //       EdgeInsets.symmetric(
+                                        //           horizontal: 12, vertical: 4),
+                                        //   leading:
+                                        //       Icon(Icons.my_location),
+                                        //   title: Text("Location"),
+                                        //   subtitle: Text(''),
+                                        // ),
                                         ListTile(
                                           leading: const Icon(Icons.email),
                                           title: const Text("Email"),
@@ -412,6 +405,46 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                                child: Text(
+                                    widget.usermodel.userType.toString() ==
+                                            "Freelancer"
+                                        ? "Project List"
+                                        : "Firm Information"),
+                                onPressed: () {
+                                  widget.usermodel.userType.toString() ==
+                                          "Freelancer"
+                                      ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const ProjectList()))
+                                      : Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const FirmInformation()));
+                                }),
+                            ElevatedButton(
+                                child: const Text("Edit Profile"),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CompleteProfile(
+                                                firebaseUser:
+                                                    widget.firebaseUser,
+                                                userModel: widget.usermodel,
+                                              )));
+                                })
+                          ],
                         )
                       ],
                     ),

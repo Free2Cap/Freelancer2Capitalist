@@ -18,7 +18,6 @@ var uuid = Uuid();
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Constants.prefs = await SharedPreferences.getInstance();
 
   // Initialize Firebase
   try {

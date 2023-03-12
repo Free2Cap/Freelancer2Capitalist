@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io' show Platform;
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:intl/intl.dart' as intl;
@@ -13,6 +14,7 @@ import '../../models/message_model.dart';
 import '../../models/user_model.dart';
 import '../../utils/apphelper.dart';
 import '../../utils/applifecycle.dart';
+import 'package:flutter/foundation.dart';
 
 class ChatRoom extends StatefulWidget {
   final ChatVisitedNotifier chatVisitedNotifier;
@@ -194,24 +196,24 @@ class _ChatRoomState extends State<ChatRoom> {
           ],
         ),
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: InkWell(
-              onTap: () =>
+          if (!kIsWeb) // Show the video call icon only on Android
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: InkWell(
+                onTap: () {
                   // CallUtils.dial(
                   //   from: widget.userModel,
                   //   to: widget.targetUser,
                   //   context: context,
-                  // ),
-                  {
-                // Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (_) => const VideoCallScreen())), //{
-                UIHelper.showAlertDialog(
-                    context, 'Video Call', 'This will be new workspace'),
-              },
-              child: const Icon(Icons.video_call),
+                  // );
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (_) => const VideoCall()));
+                  UIHelper.showAlertDialog(
+                      context, 'Video Call', 'This will be new workspace');
+                },
+                child: const Icon(Icons.video_call),
+              ),
             ),
-          ),
         ],
       ),
       body: SafeArea(
@@ -415,4 +417,13 @@ class _ChatRoomState extends State<ChatRoom> {
       ),
     );
   }
+
+  // Future<Widget> builderPlatformSpecificWidget() async {
+  //   if (kIsWeb) {
+  //     return Container(
+  //       child: Text("This is web"),
+  //     );
+  //   } else {
+  //   }
+  // }
 }

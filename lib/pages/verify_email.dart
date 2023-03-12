@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freelancer2capitalist/pages/login_page.dart';
-import 'package:freelancer2capitalist/pages_old/complete_profile.dart';
-
 import '../models/user_model.dart';
-import 'edit_profile.dart';
+import 'complete_profile.dart';
 
 class VerifyEmail extends StatefulWidget {
   final UserModel newUser;

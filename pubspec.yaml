@@ -58,10 +58,9 @@ dependencies:
   image_cropper: ^3.0.1
   uuid: ^3.0.7
   transparent_image: ^2.0.1
-  debouncer_widget: ^1.0.0
-  # agora_uikit: ^1.2.1
-  # agora_rtc_engine: ^6.1.0
-  # permission_handler: ^10.2.0
+  agora_rtc_engine: ^6.1.0
+  permission_handler: ^10.2.0
+  agora_uikit: ^1.2.1
 
 
 dev_dependencies:

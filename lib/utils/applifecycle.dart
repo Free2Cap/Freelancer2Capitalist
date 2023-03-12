@@ -15,8 +15,8 @@ class AppLifecycleObserver with WidgetsBindingObserver {
       if (state == AppLifecycleState.resumed) {
         userRef.update({'isActive': true});
       } else if (state == AppLifecycleState.paused) {
-        userRef.update({
-          'isActive': false,
+          userRef.update({
+            'isActive': false,
           'lastseen': FieldValue.serverTimestamp(),
         });
       }

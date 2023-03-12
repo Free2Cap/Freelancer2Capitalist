@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
 import 'package:freelancer2capitalist/pages/verify_email.dart';
@@ -9,9 +10,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
 import '../utils/constants.dart';
 import '../models/user_model.dart';
-import 'login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _RegistrationPageState();
@@ -31,11 +33,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
         password: password,
       );
     } on FirebaseAuthException catch (ex) {
-      print(ex.code.toString());
+      log(ex.code.toString());
     }
 
     if (credential != null) {
-      print("hello");
       String uid = credential.user!.uid;
       UserModel newUser = UserModel(
         uid: uid,
@@ -43,11 +44,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
         fullname: "",
         profilepic: "",
         bio: "",
-        location: "",
+        gender: "",
+        userType: "",
         lastSeen: DateTime.now(),
         isActive: true,
+        isTyping: false,
       );
-      print(newUser);
       await FirebaseFirestore.instance
           .collection("users")
           .doc(uid)
@@ -60,10 +62,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       credential: credential!.user!,
                     )),
             (Route<dynamic> route) => false);
-        print("new user created");
+        log("new user created");
         Constants.prefs?.setBool("loggedIn", true);
       }).onError((error, stackTrace) {
-        print("Error ${error.toString()}");
+        log("Error ${error.toString()}");
       });
     }
   }
@@ -73,7 +75,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
-    TextEditingController otpController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
