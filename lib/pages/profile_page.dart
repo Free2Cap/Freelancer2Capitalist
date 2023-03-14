@@ -8,6 +8,7 @@ import 'package:freelancer2capitalist/pages/project/firm_inforamtion.dart';
 import 'package:freelancer2capitalist/pages/project/project_list.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:transparent_image/transparent_image.dart';
+import '../models/UIHelper.dart';
 import '../models/user_model.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -264,15 +265,25 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 onTap: () async {
                   // await GoogleSignIn().disconnect();
-                  FirebaseAuth.instance.signOut().then((value) {
-                    Navigator.popUntil(context, (route) => route.isFirst);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    );
-                  });
+                  UIHelper.showConfirmationAlertDialog(
+                    context,
+                    "Logout",
+                    "Are you sure you want to log out?",
+                    (bool confirmed) {
+                      if (confirmed) {
+                        UIHelper.showLoadingDialog(context, "Logging Out...");
+                        FirebaseAuth.instance.signOut().then((value) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                  );
                 },
               ),
             ],
@@ -372,15 +383,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        // const ListTile(
-                                        //   contentPadding:
-                                        //       EdgeInsets.symmetric(
-                                        //           horizontal: 12, vertical: 4),
-                                        //   leading:
-                                        //       Icon(Icons.my_location),
-                                        //   title: Text("Location"),
-                                        //   subtitle: Text(''),
-                                        // ),
                                         ListTile(
                                           leading: const Icon(Icons.email),
                                           title: const Text("Email"),
@@ -397,6 +399,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                           title: const Text("About Me"),
                                           subtitle: Text(
                                               _bioController.text.toString()),
+                                        ),
+                                        ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 12, vertical: 4),
+                                          leading:
+                                              const Icon(Icons.person_outlined),
+                                          title: const Text("Gender"),
+                                          subtitle: Text(widget.usermodel.gender
+                                              .toString()),
                                         ),
                                       ],
                                     ),
@@ -424,8 +436,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ? Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const ProjectList()))
+                                              builder: (context) => ProjectList(
+                                                    userModel: widget.usermodel,
+                                                    firebaseUser:
+                                                        widget.firebaseUser,
+                                                  )))
                                       : Navigator.push(
                                           context,
                                           MaterialPageRoute(

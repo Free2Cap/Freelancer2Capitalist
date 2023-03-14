@@ -32,8 +32,8 @@ class _CompleteProfileState extends State<CompleteProfile> {
   File? imageFile;
   TextEditingController fullNameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
-  String? selected_gender;
-  String? selected_userType;
+  String? selectedGender;
+  String? selectedUserType;
 
   @override
   void initState() {
@@ -110,12 +110,11 @@ class _CompleteProfileState extends State<CompleteProfile> {
   void checkValues() async {
     String fullName = fullNameController.text.trim();
     String bio = bioController.text.trim();
-    String? gender = selected_gender;
-    String? userType = selected_userType;
+    String? gender = selectedGender;
+    String? userType = selectedUserType;
     // if (widget.userModel.profilepic != '') {
     //   fetchImage(widget.userModel.profilepic.toString());
     // }
-    log(imageFile.toString());
     if (fullName.isEmpty ||
         // imageFile == null ||
         gender == null ||
@@ -237,7 +236,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                 value2: "Female",
                 onChanged: (value) {
                   setState(() {
-                    selected_gender = value;
+                    selectedGender = value;
                   });
                 },
               ),
@@ -294,7 +293,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                     : null,
                 onChanged: (value) {
                   setState(() {
-                    selected_userType = value;
+                    selectedUserType = value;
                   });
                 },
               ),

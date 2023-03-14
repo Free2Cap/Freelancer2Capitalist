@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,6 +28,9 @@ class _GenderRadioGroupState extends State<GenderRadioGroup> {
   void initState() {
     super.initState();
     _selectedGender = widget.defaultValue ?? '';
+    Future.microtask(() {
+      widget.onChanged(_selectedGender);
+    });
   }
 
   @override
