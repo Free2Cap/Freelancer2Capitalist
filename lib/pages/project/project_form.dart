@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freelancer2capitalist/main.dart';
+import 'package:path_provider/path_provider.dart';
 
-import '../../models/FirebaseHelper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +29,7 @@ class ProjectForm extends StatefulWidget {
 }
 
 class _ProjectFormState extends State<ProjectForm> {
+  static ProjectModel? project;
   final TextEditingController aimController = TextEditingController();
   final TextEditingController objectiveController = TextEditingController();
   final TextEditingController scopeController = TextEditingController();
@@ -37,7 +38,6 @@ class _ProjectFormState extends State<ProjectForm> {
   List<XFile> _selectedImages = [];
   String dropdownValue = 'Select a field';
   RangeValues _budgetRangeValues = const RangeValues(0, 10000);
-  ProjectModel? project;
 
   void checkValues() async {
     String aim = aimController.text.trim();
@@ -138,15 +138,47 @@ class _ProjectFormState extends State<ProjectForm> {
   void initState() {
     super.initState();
     if (widget.projectId != null) {
-      getProject(widget.projectId!).then((value) {
+      getProject(widget.projectId!.toString()).then((value) {
         setState(() {
           project = value;
         });
+        aimController.text = project!.aim.toString();
+        scopeController.text = project!.scope.toString();
+        objectiveController.text = project!.objective.toString();
+        feasibilityController.text = project!.feasiility.toString();
+        _budgetRangeValues =
+            RangeValues(project!.budgetStart!, project!.budgetEnd!);
+        dropdownValue = project!.field.toString();
+        // int numImagesFetched = 0;
+        // for (final imageName in project!.projectImages!) {
+        //   _fetchImage(imageName).then((_) {
+        //     numImagesFetched++;
+        //     if (numImagesFetched == project!.projectImages!.length) {
+        //       setState(() {});
+        //     }
+        //   });
+        // }
       }).catchError((error) {
         log(error.toString());
       });
     }
   }
+
+  // Future<void> _fetchImage(String imageName) async {
+  //   try {
+  //     final ref = FirebaseStorage.instance.ref().child(imageName);
+  //     final tempDir = await getTemporaryDirectory();
+  //     final tempFile = File('${tempDir.path}/$imageName');
+  //     await ref.writeToFile(tempFile);
+
+  //     setState(() {
+  //       _selectedImages.add(XFile(tempFile.path));
+  //     });
+  //   } catch (e) {
+  //     log('Error fetching image: $imageName');
+  //     log(e.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

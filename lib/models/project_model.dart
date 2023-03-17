@@ -32,7 +32,8 @@ class ProjectModel {
     budgetEnd = map['budgetEnd'];
     field = map['field'];
     feasiility = map["feasiility"];
-    projectImages = map['projectImages'];
+    projectImages =
+        List<String>.from(map['projectImages']?.cast<String>() ?? []);
   }
 
   Map<String, dynamic> toMap() {

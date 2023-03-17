@@ -120,7 +120,15 @@ class _ProjectListState extends State<ProjectList> {
                                   IconButton(
                                     icon: const Icon(Icons.edit),
                                     onPressed: () {
-                                      // Handle edit button press
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProjectForm(
+                                                    firebaseUser:
+                                                        widget.firebaseUser,
+                                                    userModel: widget.userModel,
+                                                    projectId: project["uid"],
+                                                  )));
                                     },
                                   ),
                                   IconButton(

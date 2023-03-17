@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/chat_user_card.dart';
 import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
@@ -272,6 +273,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     (bool confirmed) {
                       if (confirmed) {
                         UIHelper.showLoadingDialog(context, "Logging Out...");
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(widget.usermodel.uid)
+                            .update({'isActive': false});
                         FirebaseAuth.instance.signOut().then((value) {
                           Navigator.popUntil(context, (route) => route.isFirst);
                           Navigator.pushReplacement(

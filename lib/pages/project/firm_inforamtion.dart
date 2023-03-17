@@ -17,6 +17,8 @@ class _FirmInformationState extends State<FirmInformation> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
+      
+      
     );
     ;
   }

@@ -39,13 +39,13 @@ class ThemeHelper{
     }
 
     return BoxDecoration(
-      boxShadow: [
-        const BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+      boxShadow: const [
+        BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
       ],
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        stops: [0.0, 1.0],
+        stops: const [0.0, 1.0],
         colors: [
           c1,
           c2,
