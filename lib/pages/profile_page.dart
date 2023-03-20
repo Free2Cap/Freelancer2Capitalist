@@ -7,6 +7,7 @@ import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
 import 'package:freelancer2capitalist/pages/project/firm_inforamtion.dart';
 import 'package:freelancer2capitalist/pages/project/project_list.dart';
+import 'package:freelancer2capitalist/pages/swipe/swipe.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../models/UIHelper.dart';
@@ -200,30 +201,29 @@ class _ProfilePageState extends State<ProfilePage> {
               //   color: Theme.of(context).primaryColor,
               //   height: 1,
               // ),
-              // ListTile(
-              //   leading: Icon(
-              //     Icons.password_rounded,
-              //     size: _drawerIconSize,
-              //     color: Theme.of(context).colorScheme.secondary,
-              //   ),
-              //   title: Text(
-              //     'Forgot Password Page',
-              //     style: TextStyle(
-              //         fontSize: _drawerFontSize,
-              //         color: Theme.of(context).colorScheme.secondary),
-              //   ),
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(
-              //           builder: (context) => const ForgotPasswordPage()),
-              //     );
-              //   },
-              // ),
-              // Divider(
-              //   color: Theme.of(context).primaryColor,
-              //   height: 1,
-              // ),
+              ListTile(
+                leading: Icon(
+                  Icons.password_rounded,
+                  size: _drawerIconSize,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                title: Text(
+                  'Dashboard',
+                  style: TextStyle(
+                      fontSize: _drawerFontSize,
+                      color: Theme.of(context).colorScheme.secondary),
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SwipeCard()),
+                  );
+                },
+              ),
+              Divider(
+                color: Theme.of(context).primaryColor,
+                height: 1,
+              ),
               ListTile(
                 leading: Icon(
                   Icons.chat,

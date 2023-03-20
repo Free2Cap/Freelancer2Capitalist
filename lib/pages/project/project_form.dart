@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freelancer2capitalist/main.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -12,6 +13,10 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/UIHelper.dart';
 import '../../models/project_model.dart';
 import '../../models/user_model.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:typed_data';
+import 'package:mime/mime.dart';
 
 class ProjectForm extends StatefulWidget {
   final UserModel userModel;
@@ -180,6 +185,13 @@ class _ProjectFormState extends State<ProjectForm> {
   //   }
   // }
 
+  Future<String> _getDataUrl(XFile file) async {
+    const mime = 'image/jpeg';
+    final bytes = await file.readAsBytes();
+    final base64 = base64Encode(bytes);
+    return 'data:$mime;base64,$base64';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -261,7 +273,7 @@ class _ProjectFormState extends State<ProjectForm> {
               const SizedBox(
                 height: 20,
               ),
-              const Text('Your Budget in \u{20B9}'),
+              const Text('Your Budget'),
               const SizedBox(
                 height: 20,
               ),
@@ -329,18 +341,32 @@ class _ProjectFormState extends State<ProjectForm> {
                 child: GridView.builder(
                   shrinkWrap: true,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3, // Number of columns in the grid
-                    childAspectRatio: 1, // Aspect ratio of each grid item
-                    mainAxisSpacing: 5, // Spacing between the rows
-                    crossAxisSpacing: 5, // Spacing between the columns
+                    crossAxisCount: 3,
+                    childAspectRatio: 1,
+                    mainAxisSpacing: 5,
+                    crossAxisSpacing: 5,
                   ),
                   itemCount: _selectedImages.length,
                   itemBuilder: (context, index) {
-                    return Image.file(
-                      File(_selectedImages[index].path),
-                      fit: BoxFit
-                          .cover, // To make sure the image fills the container
-                    );
+                    return kIsWeb
+                        ? FutureBuilder<String>(
+                            future:
+                                _getDataUrl(XFile(_selectedImages[index].path)),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return Image.network(
+                                  snapshot.data!,
+                                  fit: BoxFit.cover,
+                                );
+                              } else {
+                                return const Placeholder();
+                              }
+                            },
+                          )
+                        : Image.file(
+                            File(_selectedImages[index].path),
+                            fit: BoxFit.cover,
+                          );
                   },
                 ),
               ),
