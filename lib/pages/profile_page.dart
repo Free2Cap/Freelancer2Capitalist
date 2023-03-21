@@ -216,7 +216,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const SwipeCard()),
+                    MaterialPageRoute(
+                        builder: (context) => SwipeCard(
+                              userType: widget.usermodel.userType.toString(),
+                            )),
                   );
                 },
               ),

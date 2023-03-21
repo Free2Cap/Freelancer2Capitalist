@@ -1,11 +1,17 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../../../models/UIHelper.dart';
 import '../model/profile.dart';
 import '../swipe.dart';
 import 'action_button_widget.dart';
 import 'drag_widget.dart';
 
 class CardsStackWidget extends StatefulWidget {
-  const CardsStackWidget({Key? key}) : super(key: key);
+  final String userType;
+  const CardsStackWidget({Key? key, required this.userType}) : super(key: key);
 
   @override
   State<CardsStackWidget> createState() => _CardsStackWidgetState();
@@ -13,28 +19,46 @@ class CardsStackWidget extends StatefulWidget {
 
 class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
-  List<Profile> draggableItems = [
-    const Profile(
-        name: 'Rohini',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_1.png'),
-    const Profile(
-        name: 'Raghini',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_2.png'),
-    const Profile(
-        name: 'Rohini',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_3.png'),
-    const Profile(
-        name: 'Rohini',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_4.png'),
-    const Profile(
-        name: 'Rohini',
-        distance: '10 miles away',
-        imageAsset: 'assets/images/avatar_5.png'),
-  ];
+  List<dynamic> draggableItems = [];
+
+  Future<void> _getInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    final userType = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get()
+        .then((doc) => doc.get('userType'));
+
+    if (userType == 'Freelancer') {
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('firm').get();
+
+      draggableItems = querySnapshot.docs.map((doc) {
+        return Firm(
+          name: doc.get('name'),
+          mission: doc.get('mission'),
+          budgetStart: doc.get('budgetStart').toString(),
+          budgetEnd: doc.get('budgetEnd').toString(),
+          field: doc.get('field'),
+          firmImages: doc.get('firmImages'),
+        );
+      }).toList();
+    } else if (userType == 'Investor') {
+      final querySnapshot =
+          await FirebaseFirestore.instance.collection('projects').get();
+
+      draggableItems = querySnapshot.docs.map((doc) {
+        return Project(
+          aim: doc.get('aim'),
+          objective: doc.get('objective'),
+          budgetStart: doc.get('budgetStart').toString(),
+          budgetEnd: doc.get('budgetEnd').toString(),
+          field: doc.get('field'),
+          projectImages: doc.get('projectImages')[0],
+        );
+      }).toList();
+    }
+  }
 
   ValueNotifier<Swipe> swipeNotifier = ValueNotifier(Swipe.none);
   late final AnimationController _animationController;
@@ -42,6 +66,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   void initState() {
     super.initState();
+    _getInfo();
+
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -110,6 +136,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                         index: index,
                         swipeNotifier: swipeNotifier,
                         isLastCard: true,
+                        userType: widget.userType,
                       ),
                     ),
                   );
@@ -118,6 +145,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                     profile: draggableItems[index],
                     index: index,
                     swipeNotifier: swipeNotifier,
+                    userType: widget.userType,
                   );
                 }
               }),
@@ -141,6 +169,17 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                   icon: const Icon(
                     Icons.close,
                     color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(width: 20),
+                ActionButtonWidget(
+                  onPressed: () {
+                    UIHelper.showAlertDialog(
+                        context, 'information', 'work in progress');
+                  },
+                  icon: const Icon(
+                    Icons.info_rounded,
+                    color: Colors.blue,
                   ),
                 ),
                 const SizedBox(width: 20),

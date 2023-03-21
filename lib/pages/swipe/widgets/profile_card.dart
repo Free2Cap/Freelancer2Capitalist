@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../model/profile.dart';
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({Key? key, required this.profile}) : super(key: key);
-  final Profile profile;
+  const ProfileCard({Key? key, required this.profile, required this.userType})
+      : super(key: key);
+  final dynamic profile;
+  final String userType;
 
   @override
   Widget build(BuildContext context) {
@@ -14,10 +16,11 @@ class ProfileCard extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
+            bottom: 180,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                profile.imageAsset,
+              child: Image.network(
+                profile!.projectImages,
                 fit: BoxFit.fitHeight,
               ),
             ),
@@ -25,7 +28,7 @@ class ProfileCard extends StatelessWidget {
           Positioned(
             bottom: 0,
             child: Container(
-              height: 80,
+              height: 200,
               width: 340,
               decoration: ShapeDecoration(
                 color: Colors.white,
@@ -34,7 +37,7 @@ class ProfileCard extends StatelessWidget {
                 ),
                 shadows: <BoxShadow>[
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(0.10),
                     blurRadius: 8,
                   ),
                 ],
@@ -46,20 +49,44 @@ class ProfileCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      profile.name,
+                      userType == 'Investor'
+                          ? 'Aim: ${profile!.aim}'
+                          : 'Name: ${profile!.name}',
                       style: const TextStyle(
                         fontFamily: 'Nunito',
                         fontWeight: FontWeight.w800,
                         fontSize: 21,
+                        color: Colors.black,
                       ),
                     ),
+                    const SizedBox(height: 10),
                     Text(
-                      profile.distance,
+                      'Budget: ${profile!.budgetStart} - ${profile!.budgetEnd}',
                       style: const TextStyle(
                         fontFamily: 'Nunito',
                         fontWeight: FontWeight.w400,
                         fontSize: 14,
-                        color: Colors.grey,
+                        color: Color.fromARGB(255, 67, 67, 67),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Objective: ${profile!.objective}',
+                      style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 67, 67, 67),
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Field: ${profile!.field}',
+                      style: const TextStyle(
+                        fontFamily: 'Nunito',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Color.fromARGB(255, 67, 67, 67),
                       ),
                     ),
                   ],

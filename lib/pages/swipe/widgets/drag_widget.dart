@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/pages/swipe/widgets/profile_card.dart';
 import 'package:freelancer2capitalist/pages/swipe/widgets/tag_widget.dart';
@@ -11,11 +13,13 @@ class DragWidget extends StatefulWidget {
     required this.index,
     required this.swipeNotifier,
     this.isLastCard = false,
+    required this.userType,
   }) : super(key: key);
-  final Profile profile;
+  final dynamic profile;
   final int index;
   final ValueNotifier<Swipe> swipeNotifier;
   final bool isLastCard;
+  final String userType;
 
   @override
   State<DragWidget> createState() => _DragWidgetState();
@@ -41,7 +45,10 @@ class _DragWidgetState extends State<DragWidget> {
                     : const AlwaysStoppedAnimation(0),
                 child: Stack(
                   children: [
-                    ProfileCard(profile: widget.profile),
+                    ProfileCard(
+                      profile: widget.profile,
+                      userType: widget.userType,
+                    ),
                     widget.swipeNotifier.value != Swipe.none
                         ? widget.swipeNotifier.value == Swipe.right
                             ? Positioned(
@@ -99,7 +106,10 @@ class _DragWidgetState extends State<DragWidget> {
             builder: (BuildContext context, Swipe swipe, Widget? child) {
               return Stack(
                 children: [
-                  ProfileCard(profile: widget.profile),
+                  ProfileCard(
+                    profile: widget.profile,
+                    userType: widget.userType,
+                  ),
                   // heck if this is the last card and Swipe is not equal to Swipe.none
                   swipe != Swipe.none && widget.isLastCard
                       ? swipe == Swipe.right
