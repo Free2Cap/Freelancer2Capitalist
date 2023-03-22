@@ -6,7 +6,9 @@ class Project {
     required this.budgetEnd,
     required this.field,
     required this.projectImages,
+    required this.creator,
   });
+  final String creator;
   final String aim;
   final String objective;
   final String budgetStart;
@@ -23,6 +25,7 @@ class Firm {
     required this.budgetEnd,
     required this.field,
     required this.firmImages,
+    required this.creator,
   });
   final String name;
   final String mission;
@@ -30,4 +33,5 @@ class Firm {
   final String budgetEnd;
   final String field;
   final String firmImages;
+  final String creator;
 }

@@ -21,7 +21,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
   List<dynamic> draggableItems = [];
 
-  Future<void> _getInfo() async {
+  Future<List<dynamic>> _getInfo() async {
     final user = FirebaseAuth.instance.currentUser;
     final userType = await FirebaseFirestore.instance
         .collection('users')
@@ -33,31 +33,45 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
       final querySnapshot =
           await FirebaseFirestore.instance.collection('firm').get();
 
-      draggableItems = querySnapshot.docs.map((doc) {
+      final results = await Future.wait(querySnapshot.docs.map((doc) async {
+        String uid = doc.get('uid').toString();
+        final firebaseFirestore =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
         return Firm(
           name: doc.get('name'),
           mission: doc.get('mission'),
           budgetStart: doc.get('budgetStart').toString(),
           budgetEnd: doc.get('budgetEnd').toString(),
           field: doc.get('field'),
-          firmImages: doc.get('firmImages'),
+          firmImages: doc.get('firmImage'),
+          creator: firebaseFirestore.get('fullname'),
         );
-      }).toList();
+      }));
+
+      return results;
     } else if (userType == 'Investor') {
       final querySnapshot =
           await FirebaseFirestore.instance.collection('projects').get();
 
-      draggableItems = querySnapshot.docs.map((doc) {
+      final results = await Future.wait(querySnapshot.docs.map((doc) async {
+        String uid = doc.get('creator').toString();
+        final firebaseFirestore =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
         return Project(
           aim: doc.get('aim'),
           objective: doc.get('objective'),
           budgetStart: doc.get('budgetStart').toString(),
           budgetEnd: doc.get('budgetEnd').toString(),
           field: doc.get('field'),
-          projectImages: doc.get('projectImages')[0],
+          projectImages: (doc.get('projectImages') as List<dynamic>)[0],
+          creator: firebaseFirestore.get('fullname'),
         );
-      }).toList();
+      }));
+
+      return results;
     }
+
+    return []; // default empty result if userType is neither Freelancer nor Investor
   }
 
   ValueNotifier<Swipe> swipeNotifier = ValueNotifier(Swipe.none);
@@ -66,7 +80,11 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
   @override
   void initState() {
     super.initState();
-    _getInfo();
+    _getInfo().then((value) {
+      setState(() {
+        draggableItems = value;
+      });
+    });
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 500),
