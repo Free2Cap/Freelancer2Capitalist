@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/models/project_model.dart';
 
@@ -96,17 +100,12 @@ class UIHelper {
   }
 }
 
-class ProjectDetailsDialog extends StatefulWidget {
+class ProjectDetailsDialog extends StatelessWidget {
   final Map<String, dynamic> project;
 
   const ProjectDetailsDialog({Key? key, required this.project})
       : super(key: key);
 
-  @override
-  _ProjectDetailsDialogState createState() => _ProjectDetailsDialogState();
-}
-
-class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -118,27 +117,27 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Objective: ${widget.project['objective'] ?? ''}',
+                'Objective: ${project['objective'] ?? ''}',
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 8.0),
               Text(
-                'Scope: ${widget.project['scope'] ?? ''}',
+                'Scope: ${project['scope'] ?? ''}',
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 8.0),
               Text(
-                'Budget Range: ${(widget.project['budgetStart']?.toStringAsFixed(2) ?? '')} - ${(widget.project['budgetEnd']?.toStringAsFixed(2) ?? '')}',
+                'Budget Range: ${(project['budgetStart']?.toStringAsFixed(2) ?? '')} - ${(project['budgetEnd']?.toStringAsFixed(2) ?? '')}',
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 8.0),
               Text(
-                'Field: ${widget.project['field'] ?? ''}',
+                'Field: ${project['field'] ?? ''}',
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 8.0),
               Text(
-                'Feasibility: ${widget.project['feasibility'] ?? ''}',
+                'Feasibility: ${project['feasibility'] ?? ''}',
                 style: const TextStyle(fontSize: 16.0),
               ),
               const SizedBox(height: 16.0),
@@ -155,10 +154,10 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
-                  itemCount: widget.project["projectImages"].length,
+                  itemCount: project["projectImages"].length,
                   itemBuilder: (BuildContext context, int index) {
                     return Image.network(
-                      widget.project["projectImages"][index],
+                      project["projectImages"][index],
                       fit: BoxFit.cover,
                     );
                   },
@@ -192,6 +191,161 @@ class _ProjectDetailsDialogState extends State<ProjectDetailsDialog> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class dynamicInformatoinViewer extends StatelessWidget {
+  const dynamicInformatoinViewer(
+      {Key? key, required this.uid, required this.infoType})
+      : super(key: key);
+
+  final String uid;
+  final String infoType;
+
+  Future<Map<String, dynamic>> _getInfo(String userType) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      if (userType == "Freelancer") {
+        final DocumentSnapshot<Map<String, dynamic>> snapshot =
+            await firestore.collection('firm').doc(uid).get();
+        return snapshot.data() ?? {};
+      } else {
+        final DocumentSnapshot<Map<String, dynamic>> snapshot =
+            await firestore.collection('projects').doc(uid).get();
+        return snapshot.data() ?? {};
+      }
+    } catch (e) {
+      log('Error getting information: $e');
+      return {};
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>>(
+      future: _getInfo(infoType),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final Map<String, dynamic> information = snapshot.data!;
+          return Dialog(
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      infoType == 'Investor'
+                          ? 'Aim: ${information['aim'] ?? ''}'
+                          : 'Name: ${information['name'] ?? ''}',
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      infoType == 'Investor'
+                          ? 'Objective: ${information['objective'] ?? ''}'
+                          : 'Background: ${information['background'] ?? ''}',
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      infoType == 'Investor'
+                          ? 'Scope: ${information['scope'] ?? ''}'
+                          : 'Mission: ${information['mission'] ?? ''}',
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      'Budget Range: \u{20B9}${(information['budgetStart']?.toStringAsFixed(2) ?? '')} - \u{20B9}${(information['budgetEnd']?.toStringAsFixed(2) ?? '')}',
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Text(
+                      'Field: ${information['field'] ?? ''}',
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    if (infoType == 'Investor')
+                      Text(
+                        'Feasibility: ${information['feasiility'] ?? ''}',
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    const SizedBox(height: 16.0),
+                    const Text(
+                      'Images:',
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8.0),
+                    if (infoType == 'Investor')
+                      SizedBox(
+                        height: information["projectImages"].length <= 3
+                            ? 90
+                            : 180, // set the height dynamically
+                        child: GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                          ),
+                          itemCount: information["projectImages"].length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Image.network(
+                              information["projectImages"][index],
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        height: 90,
+                        child: Image.network(
+                          information["firmImage"],
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    const SizedBox(height: 16.0),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.blue),
+                          foregroundColor:
+                              MaterialStateProperty.all(Colors.white),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 8.0),
+                          ),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'OK',
+                          style: TextStyle(fontSize: 18.0),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('Error getting information'));
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
     );
   }
 }

@@ -1,5 +1,6 @@
 class Project {
   const Project({
+    required this.uid,
     required this.aim,
     required this.objective,
     required this.budgetStart,
@@ -8,6 +9,7 @@ class Project {
     required this.projectImages,
     required this.creator,
   });
+  final String uid;
   final String creator;
   final String aim;
   final String objective;
@@ -19,6 +21,7 @@ class Project {
 
 class Firm {
   const Firm({
+    required this.uid,
     required this.name,
     required this.mission,
     required this.budgetStart,
@@ -27,6 +30,7 @@ class Firm {
     required this.firmImages,
     required this.creator,
   });
+  final String uid;
   final String name;
   final String mission;
   final String budgetStart;

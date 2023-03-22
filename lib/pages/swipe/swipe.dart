@@ -22,4 +22,4 @@ class SwipeCard extends StatelessWidget {
   }
 }
 
-enum Swipe { left, right, up, none }
+enum Swipe { left, right, none }

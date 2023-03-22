@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/main.dart';
 import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/chat_room.dart';
+import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
 
 import '../../models/user_model.dart';
 import '../../utils/applifecycle.dart';
@@ -25,48 +26,6 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final ChatVisitedNotifier _isChatRoomVisited = ChatVisitedNotifier(false);
   TextEditingController searchController = TextEditingController();
-
-  Future<ChatRoomModel?> getChatRoomModel(UserModel targetUser) async {
-    ChatRoomModel? chatRoom;
-
-    QuerySnapshot snapshotDocs = await FirebaseFirestore.instance
-        .collection("chatrooms")
-        .where("participants.${widget.userModel.uid}", isEqualTo: true)
-        .where("participants.${targetUser.uid}", isEqualTo: true)
-        .get();
-    if (snapshotDocs.docs.isNotEmpty) {
-      //Fetch the existing one
-      log("there is chat room");
-      var docData = snapshotDocs.docs[0].data();
-      ChatRoomModel existingChatRoom =
-          ChatRoomModel.fromMap(docData as Map<String, dynamic>);
-
-      chatRoom = existingChatRoom;
-    } else {
-      //create a new one
-      ChatRoomModel newChatRoom = ChatRoomModel(
-          chatroomid: uuid.v1(),
-          lastMessage: "",
-          participants: {
-            widget.userModel.uid.toString(): true,
-            targetUser.uid.toString(): true
-          },
-          sequnece: DateTime.now(),
-          users: [widget.userModel.uid.toString(), targetUser.uid.toString()]);
-      try {
-        await FirebaseFirestore.instance
-            .collection("chatrooms")
-            .doc(newChatRoom.chatroomid)
-            .set(newChatRoom.toMap());
-      } on FirebaseException catch (ex) {
-        log(ex.toString());
-      }
-      chatRoom = newChatRoom;
-      log("new chatroom created");
-    }
-
-    return chatRoom;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,11 +72,13 @@ class _SearchPageState extends State<SearchPage> {
 
                       UserModel searchedUser = UserModel.fromMap(userMap);
                       final ChatVisitedNotifierId _isChatRoomVisitedId =
-                          ChatVisitedNotifierId(widget.userModel.uid.toString());
+                          ChatVisitedNotifierId(
+                              widget.userModel.uid.toString());
                       return ListTile(
                         onTap: () async {
-                          ChatRoomModel? chatroomModel =
-                              await getChatRoomModel(searchedUser);
+                          ChatHelper chatHelper = ChatHelper();
+                          ChatRoomModel? chatroomModel = await chatHelper
+                              .getChatRoomModel(searchedUser, widget.userModel);
 
                           if (chatroomModel != null) {
                             Navigator.pop(context);

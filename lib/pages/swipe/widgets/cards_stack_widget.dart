@@ -30,14 +30,17 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
         .then((doc) => doc.get('userType'));
 
     if (userType == 'Freelancer') {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('firm').get();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('firm')
+          .where('uid', isNotEqualTo: user.uid)
+          .get();
 
       final results = await Future.wait(querySnapshot.docs.map((doc) async {
         String uid = doc.get('uid').toString();
         final firebaseFirestore =
             await FirebaseFirestore.instance.collection('users').doc(uid).get();
         return Firm(
+          uid: doc.get('uid'),
           name: doc.get('name'),
           mission: doc.get('mission'),
           budgetStart: doc.get('budgetStart').toString(),
@@ -50,14 +53,17 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
 
       return results;
     } else if (userType == 'Investor') {
-      final querySnapshot =
-          await FirebaseFirestore.instance.collection('projects').get();
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('projects')
+          .where('creator', isNotEqualTo: user.uid)
+          .get();
 
       final results = await Future.wait(querySnapshot.docs.map((doc) async {
         String uid = doc.get('creator').toString();
         final firebaseFirestore =
             await FirebaseFirestore.instance.collection('users').doc(uid).get();
         return Project(
+          uid: doc.get('uid'),
           aim: doc.get('aim'),
           objective: doc.get('objective'),
           budgetStart: doc.get('budgetStart').toString(),
@@ -92,8 +98,13 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     );
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        draggableItems.removeLast();
         _animationController.reset();
+        try {
+          draggableItems.removeLast();
+        } on RangeError catch (e) {
+          log(e.toString());
+          UIHelper.showAlertDialog(context, 'End', 'No more slides');
+        }
 
         swipeNotifier.value = Swipe.none;
       }
@@ -192,8 +203,20 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                 const SizedBox(width: 20),
                 ActionButtonWidget(
                   onPressed: () {
-                    UIHelper.showAlertDialog(
-                        context, 'information', 'work in progress');
+                    try {
+                      dynamic info = draggableItems.last;
+                      showDialog(
+                        context: context,
+                        builder: (_) => dynamicInformatoinViewer(
+                          infoType: widget.userType,
+                          uid: info.uid,
+                        ),
+                      );
+                    } on StateError catch (e) {
+                      log(e.toString());
+                      UIHelper.showAlertDialog(
+                          context, 'End', 'No more Slides');
+                    }
                   },
                   icon: const Icon(
                     Icons.info_rounded,
