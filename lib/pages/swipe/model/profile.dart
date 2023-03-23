@@ -8,6 +8,7 @@ class Project {
     required this.field,
     required this.projectImages,
     required this.creator,
+    required this.creatorUid,
   });
   final String uid;
   final String creator;
@@ -17,6 +18,7 @@ class Project {
   final String budgetEnd;
   final String field;
   final String projectImages;
+  final String creatorUid;
 }
 
 class Firm {

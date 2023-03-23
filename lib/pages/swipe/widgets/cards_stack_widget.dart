@@ -3,7 +3,11 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/models/user_model.dart';
+import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
+import '../../../models/FirebaseHelper.dart';
 import '../../../models/UIHelper.dart';
+import '../../../models/chat_room_model.dart';
 import '../model/profile.dart';
 import '../swipe.dart';
 import 'action_button_widget.dart';
@@ -20,6 +24,20 @@ class CardsStackWidget extends StatefulWidget {
 class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
   List<dynamic> draggableItems = [];
+
+  void _createUserTargetChatRoom(String targetUid) async {
+    try {
+      ChatHelper chatHelper = ChatHelper();
+      String user = FirebaseAuth.instance.currentUser!.uid;
+      UserModel? currentUserModel = await FirebaseHelper.getUserModelById(user);
+      UserModel? targetUserModel =
+          await FirebaseHelper.getUserModelById(targetUid);
+      // log('current:${currentUserModel?.fullname.toString()} \n target:${targetUserModel?.fullname.toString()} \n uid:${draggableItems.last.creatorUid}');
+      await chatHelper.getChatRoomModel(targetUserModel!, currentUserModel!);
+    } on Exception catch (ex) {
+      log(ex.toString());
+    }
+  }
 
   Future<List<dynamic>> _getInfo() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -71,6 +89,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           field: doc.get('field'),
           projectImages: (doc.get('projectImages') as List<dynamic>)[0],
           creator: firebaseFirestore.get('fullname'),
+          creatorUid: uid,
         );
       }));
 
@@ -194,6 +213,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                   onPressed: () {
                     swipeNotifier.value = Swipe.left;
                     _animationController.forward();
+                    log('swipped left');
                   },
                   icon: const Icon(
                     Icons.close,
@@ -228,6 +248,12 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                   onPressed: () {
                     swipeNotifier.value = Swipe.right;
                     _animationController.forward();
+                    log('swipped right');
+                    try {
+                      _createUserTargetChatRoom(draggableItems.last.creatorUid);
+                    } on StateError catch (ex) {
+                      log(ex.toString());
+                    }
                   },
                   icon: const Icon(
                     Icons.favorite,
@@ -256,6 +282,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             },
             onAccept: (int index) {
               setState(() {
+                log('swipped left');
                 draggableItems.removeAt(index);
               });
             },
@@ -279,6 +306,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             },
             onAccept: (int index) {
               setState(() {
+                _createUserTargetChatRoom(draggableItems.last.creatorUid);
+                log('swipped right');
                 draggableItems.removeAt(index);
               });
             },

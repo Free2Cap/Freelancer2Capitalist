@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/pages/onboarding/onBoarding.dart';
 import 'package:freelancer2capitalist/pages/profile_page.dart';
 import '../models/FirebaseHelper.dart';
 import '../models/user_model.dart';
@@ -65,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen> {
                             usermodel: newUserModel!,
                             firebaseUser: currentUser!,
                           )
-                        : const LoginPage()),
+                        : OnBoarding()),
             (route) => false);
       });
     });
