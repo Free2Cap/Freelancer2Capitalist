@@ -25,7 +25,7 @@ class BackgroudCurveWidget extends StatelessWidget {
       child: const Padding(
         padding: EdgeInsets.only(top: 46.0, left: 20.0),
         child: Text(
-          'Discover',
+          'E-Shark',
           style: TextStyle(
             fontFamily: 'Nunito',
             fontWeight: FontWeight.w800,

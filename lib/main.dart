@@ -42,7 +42,7 @@ class LoginUiApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Login UI',
+      title: 'E-Shark',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: _primaryColor,
@@ -84,7 +84,7 @@ class _HomeState extends State<Home> {
         future: _initializeFirebase(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
-            return SplashScreen(title: 'Flutter Login UI');
+            return SplashScreen(title: 'E-Shark');
           }
           return const Center(
             child: CircularProgressIndicator(),
