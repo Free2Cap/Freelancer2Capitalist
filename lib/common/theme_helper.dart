@@ -30,7 +30,7 @@ class ThemeHelper{
 
   BoxDecoration buttonBoxDecoration(BuildContext context, [String color1 = "", String color2 = ""]) {
     Color c1 = Theme.of(context).primaryColor;
-    Color c2 = Theme.of(context).accentColor;
+    Color c2 = Theme.of(context).colorScheme.secondary;
     if (color1.isEmpty == false) {
       c1 = HexColor(color1);
     }
@@ -39,13 +39,13 @@ class ThemeHelper{
     }
 
     return BoxDecoration(
-      boxShadow: [
-        const BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
+      boxShadow: const [
+        BoxShadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 5.0)
       ],
       gradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
-        stops: [0.0, 1.0],
+        stops: const [0.0, 1.0],
         colors: [
           c1,
           c2,

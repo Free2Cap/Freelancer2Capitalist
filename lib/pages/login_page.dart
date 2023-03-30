@@ -1,11 +1,16 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
+import 'package:freelancer2capitalist/models/user_model.dart';
 import 'package:freelancer2capitalist/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
+import '../models/UIHelper.dart';
 import '../services/auth_service.dart';
 import 'forgot_password_page.dart';
 import 'profile_page.dart';
@@ -30,11 +35,13 @@ class _LoginPageState extends State<LoginPage> {
       required BuildContext context}) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
+    UIHelper.showLoadingDialog(context, "Logging In...");
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = userCredential.user;
     } on FirebaseAuthException catch (e) {
+      Navigator.pop(context);
       if (e.code == "user-not-found") {
         // ignore: avoid_print
         print("No user found for that email");
@@ -44,36 +51,44 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   googleLogin() async {
-    print("googleLogin method Called");
-    GoogleSignIn _googleSignIn = GoogleSignIn();
-    try {
-      var reslut = await _googleSignIn.signIn();
-      if (reslut == null) {
-        return;
-      }
+    // print("googleLogin method Called");
+    // GoogleSignIn _googleSignIn = GoogleSignIn();
+    // // FirebaseAuth auth = FirebaseAuth.instance;
+    // // User? user;
+    // try {
+    //   var reslut = await _googleSignIn.signIn();
+    //   if (reslut == null) {
+    //     return;
+    //   }
 
-      final userData = await reslut.authentication;
-      final credential = GoogleAuthProvider.credential(
-          accessToken: userData.accessToken, idToken: userData.idToken);
-      var finalResult =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-      print("Result $reslut");
-      print(reslut.displayName);
-      print(reslut.email);
-      print(reslut.photoUrl);
-      print("done");
-      bool? newuser = finalResult.additionalUserInfo?.isNewUser;
-      print(reslut);
-      if (newuser == false) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => ProfilePage()));
-      } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
-      }
-    } catch (error) {
-      print(error);
-    }
+    //   final userData = await reslut.authentication;
+    //   final credential = GoogleAuthProvider.credential(
+    //       accessToken: userData.accessToken, idToken: userData.idToken);
+    //   var finalResult =
+    //       await FirebaseAuth.instance.signInWithCredential(credential);
+
+    //   print("Result $reslut");
+    //   print(reslut.displayName);
+    //   print(reslut.email);
+    //   print(reslut.photoUrl);
+    //   print("done");
+    //   bool? newuser = finalResult.additionalUserInfo?.isNewUser;
+    //   print(reslut);
+    //   if (newuser == false) {
+    //     Navigator.pushReplacement(
+    //         context,
+    //         MaterialPageRoute(
+    //             builder: (context) => ProfilePage(
+    //                   usermodel: null,
+    //                   firebaseUser: finalResult,
+    //                 )));
+    //   } else {
+    //     Navigator.pushReplacement(
+    //         context, MaterialPageRoute(builder: (context) => LoginPage()));
+    //   }
+    // } catch (error) {
+    //   print(error);
+    // }
   }
 
   // Future<void> logout() async {
@@ -103,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                   child: Column(
                     children: [
                       const Text(
-                        'Freelancing Capitalist',
+                        'E-Shark',
                         style: TextStyle(
                             fontSize: 60, fontWeight: FontWeight.bold),
                       ),
@@ -176,26 +191,60 @@ class _LoginPageState extends State<LoginPage> {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    User? user = await loginUsingEmailPassword(
-                                      email: emailController.text,
-                                      password: passwordController.text,
-                                      context: context,
-                                    );
-                                    // ignore: avoid_print
-                                    print(user);
-                                    if (user != null) {
-                                      Constants.prefs
-                                          ?.setBool("loggedIn", true);
-
-                                      Navigator.pushReplacement(
+                                    String email = emailController.text.trim();
+                                    String password =
+                                        passwordController.text.trim();
+                                    if (email == "" || password == "") {
+                                      UIHelper.showAlertDialog(
                                           context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ProfilePage()));
+                                          "Incomplete Data",
+                                          "Please fill all the fields");
                                     } else {
-                                      emailController.text = "";
-                                      passwordController.text = "";
+                                      User? user =
+                                          await loginUsingEmailPassword(
+                                        email: email,
+                                        password: password,
+                                        context: context,
+                                      );
+                                      // ignore: avoid_print
+                                      // print(user);
+                                      log(user.toString());
+
+                                      if (user != null) {
+                                        Constants.prefs
+                                            ?.setBool("loggedIn", true);
+                                        DocumentSnapshot userData =
+                                            await FirebaseFirestore.instance
+                                                .collection('users')
+                                                .doc(user.uid)
+                                                .get();
+                                        UserModel userModel = UserModel.fromMap(
+                                            userData.data()
+                                                as Map<String, dynamic>);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfilePage(
+                                                      firebaseUser: user,
+                                                      usermodel: userModel,
+                                                    )));
+                                      } else {
+                                        const snackdemo = SnackBar(
+                                          content: Text(
+                                              'No user with such email found'),
+                                          backgroundColor: Colors.pinkAccent,
+                                          elevation: 10,
+                                          behavior: SnackBarBehavior.floating,
+                                          margin: EdgeInsets.all(5),
+                                        );
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackdemo);
+                                        emailController.text = "";
+                                        passwordController.text = "";
+                                      }
                                     }
+
                                     //After successful login we will redirect to profile page. Let's create profile page now
                                   },
                                 ),
@@ -234,7 +283,7 @@ class _LoginPageState extends State<LoginPage> {
                                       size: 35,
                                       color: HexColor("#EC2D2F"),
                                     ),
-                                    onTap: googleLogin,
+                                    onTap: () {}, //googleLogin,
                                     // AuthService().signInWithGodogle(), //{
                                     // setState(() {
 

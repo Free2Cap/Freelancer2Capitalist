@@ -1,28 +1,47 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freelancer2capitalist/pages/chat_pages/chat_user_card.dart';
+import 'package:freelancer2capitalist/pages/complete_profile.dart';
 import 'package:freelancer2capitalist/pages/login_page.dart';
-import 'package:freelancer2capitalist/pages/splash_screen.dart';
+import 'package:freelancer2capitalist/pages/project/firm_inforamtion.dart';
+import 'package:freelancer2capitalist/pages/project/project_list.dart';
+import 'package:freelancer2capitalist/pages/swipe/swipe.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-import '../utils/constants.dart';
-import 'forgot_password_page.dart';
-import 'forgot_password_verification_page.dart';
-import 'registration_page.dart';
+import 'package:transparent_image/transparent_image.dart';
+import '../models/UIHelper.dart';
+import '../models/user_model.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final UserModel usermodel;
+  final User firebaseUser;
+  const ProfilePage(
+      {super.key, required this.usermodel, required this.firebaseUser});
 
   @override
-  State<StatefulWidget> createState() {
-    return _ProfilePageState();
-  }
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
   final double _drawerIconSize = 24;
   final double _drawerFontSize = 17;
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _bioController = TextEditingController();
+  final _profilePicController = TextEditingController();
+  final _userTypeController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the initial values of the controllers
+    _nameController.text = widget.usermodel.fullname!;
+    _emailController.text = widget.usermodel.email!;
+    _bioController.text = widget.usermodel.bio!;
+    _profilePicController.text = widget.usermodel.profilepic!;
+    _userTypeController.text = widget.usermodel.userType!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Container(
                   alignment: Alignment.bottomLeft,
                   child: const Text(
-                    "DASHBOARD",
+                    "Free2Cap",
                     style: TextStyle(
                         fontSize: 25,
                         color: Colors.white,
@@ -120,68 +139,68 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(
-                  Icons.screen_lock_landscape_rounded,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Splash Screen',
-                  style: TextStyle(
-                      fontSize: 17,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              SplashScreen(title: "Splash Screen")));
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.login_rounded,
-                    size: _drawerIconSize,
-                    color: Theme.of(context).colorScheme.secondary),
-                title: Text(
-                  'Login Page',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(Icons.person_add_alt_1,
-                    size: _drawerIconSize,
-                    color: Theme.of(context).colorScheme.secondary),
-                title: Text(
-                  'Registration Page',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegistrationPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
+              // ListTile(
+              //   leading: Icon(
+              //     Icons.screen_lock_landscape_rounded,
+              //     size: _drawerIconSize,
+              //     color: Theme.of(context).colorScheme.secondary,
+              //   ),
+              //   title: Text(
+              //     'Splash Screen',
+              //     style: TextStyle(
+              //         fontSize: 17,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context) =>
+              //                 SplashScreen(title: "Splash Screen")));
+              //   },
+              // ),
+              // ListTile(
+              //   leading: Icon(Icons.login_rounded,
+              //       size: _drawerIconSize,
+              //       color: Theme.of(context).colorScheme.secondary),
+              //   title: Text(
+              //     'Login Page',
+              //     style: TextStyle(
+              //         fontSize: _drawerFontSize,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const LoginPage()),
+              //     );
+              //   },
+              // ),
+              // Divider(
+              //   color: Theme.of(context).primaryColor,
+              //   height: 1,
+              // ),
+              // ListTile(
+              //   leading: Icon(Icons.person_add_alt_1,
+              //       size: _drawerIconSize,
+              //       color: Theme.of(context).colorScheme.secondary),
+              //   title: Text(
+              //     'Registration Page',
+              //     style: TextStyle(
+              //         fontSize: _drawerFontSize,
+              //         color: Theme.of(context).colorScheme.secondary),
+              //   ),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => const RegistrationPage()),
+              //     );
+              //   },
+              // ),
+              // Divider(
+              //   color: Theme.of(context).primaryColor,
+              //   height: 1,
+              // ),
               ListTile(
                 leading: Icon(
                   Icons.password_rounded,
@@ -189,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
-                  'Forgot Password Page',
+                  'Dashboard',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
                       color: Theme.of(context).colorScheme.secondary),
@@ -198,7 +217,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ForgotPasswordPage()),
+                        builder: (context) => SwipeCard(
+                              userType: widget.usermodel.userType.toString(),
+                            )),
                   );
                 },
               ),
@@ -208,12 +229,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               ListTile(
                 leading: Icon(
-                  Icons.verified_user_sharp,
+                  Icons.chat,
                   size: _drawerIconSize,
                   color: Theme.of(context).colorScheme.secondary,
                 ),
                 title: Text(
-                  'Verification Page',
+                  'Chat Panel',
                   style: TextStyle(
                       fontSize: _drawerFontSize,
                       color: Theme.of(context).colorScheme.secondary),
@@ -222,7 +243,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ProfilePage()),
+                        builder: (context) => ChatUserCard(
+                              userModel: widget.usermodel,
+                              firebaseUser: widget.firebaseUser,
+                            )),
                     //const ForgotPasswordVerificationPage()),
                   );
                 },
@@ -244,17 +268,30 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 onTap: () async {
-                  await GoogleSignIn().disconnect();
-                  FirebaseAuth.instance.signOut().then((value) {
-                    Constants.prefs?.setBool("loggedIn", false);
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
-                    );
-                  });
+                  // await GoogleSignIn().disconnect();
+                  UIHelper.showConfirmationAlertDialog(
+                    context,
+                    "Logout",
+                    "Are you sure you want to log out?",
+                    (bool confirmed) {
+                      if (confirmed) {
+                        UIHelper.showLoadingDialog(context, "Logging Out...");
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(widget.usermodel.uid)
+                            .update({'isActive': false});
+                        FirebaseAuth.instance.signOut().then((value) {
+                          Navigator.popUntil(context, (route) => route.isFirst);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginPage(),
+                            ),
+                          );
+                        });
+                      }
+                    },
+                  );
                 },
               ),
             ],
@@ -288,25 +325,39 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    child: Icon(
-                      Icons.person,
-                      size: 80,
-                      color: Colors.grey.shade300,
+                    child: ClipOval(
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey[300],
+                        radius: 40,
+                        child: _profilePicController.text != ''
+                            ? FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: _profilePicController.text.toString(),
+                                fit: BoxFit.cover,
+                              )
+                            : Icon(
+                                Icons.person,
+                                size: 80,
+                                color: Colors.grey.shade300,
+                              ),
+                      ),
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Ms Anchal Singh',
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  Text(
+                    _nameController.text.toString(),
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const Text(
-                    'Freelancer',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Text(
+                    _userTypeController.text.toString(),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     height: 10,
@@ -340,29 +391,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ...ListTile.divideTiles(
                                       color: Colors.grey,
                                       tiles: [
-                                        const ListTile(
-                                          contentPadding: EdgeInsets.symmetric(
-                                              horizontal: 12, vertical: 4),
-                                          leading: Icon(Icons.my_location),
-                                          title: Text("Location"),
-                                          subtitle: Text("USA"),
-                                        ),
-                                        const ListTile(
-                                          leading: Icon(Icons.email),
-                                          title: Text("Email"),
-                                          subtitle:
-                                              Text("anchalsingh1029@gmail.com"),
-                                        ),
-                                        const ListTile(
-                                          leading: Icon(Icons.phone),
-                                          title: Text("Phone"),
-                                          subtitle: Text("9104601838"),
-                                        ),
-                                        const ListTile(
-                                          leading: Icon(Icons.person),
-                                          title: Text("About Me"),
+                                        ListTile(
+                                          leading: const Icon(Icons.email),
+                                          title: const Text("Email"),
                                           subtitle: Text(
-                                              "This is a about me link and you can khow about me in this section."),
+                                              _emailController.text.toString()),
+                                        ),
+                                        // const ListTile(
+                                        //   leading: Icon(Icons.phone),
+                                        //   title: Text("Phone"),
+                                        //   subtitle: Text("9104601838"),
+                                        // ),
+                                        ListTile(
+                                          leading: const Icon(Icons.person),
+                                          title: const Text("About Me"),
+                                          subtitle: Text(
+                                              _bioController.text.toString()),
+                                        ),
+                                        ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 12, vertical: 4),
+                                          leading:
+                                              const Icon(Icons.person_outlined),
+                                          title: const Text("Gender"),
+                                          subtitle: Text(widget.usermodel.gender
+                                              .toString()),
                                         ),
                                       ],
                                     ),
@@ -371,6 +425,49 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                                child: Text(
+                                    widget.usermodel.userType.toString() ==
+                                            "Freelancer"
+                                        ? "Project List"
+                                        : "Firm Information"),
+                                onPressed: () {
+                                  widget.usermodel.userType.toString() ==
+                                          "Freelancer"
+                                      ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProjectList(
+                                                    userModel: widget.usermodel,
+                                                    firebaseUser:
+                                                        widget.firebaseUser,
+                                                  )))
+                                      : Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const FirmInformation()));
+                                }),
+                            ElevatedButton(
+                                child: const Text("Edit Profile"),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CompleteProfile(
+                                                firebaseUser:
+                                                    widget.firebaseUser,
+                                                userModel: widget.usermodel,
+                                              )));
+                                })
+                          ],
                         )
                       ],
                     ),

@@ -1,12 +1,19 @@
-import 'package:email_otp/email_otp.dart';
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
-import 'package:freelancer2capitalist/pages/forgot_password_verification_page.dart';
+import 'package:freelancer2capitalist/pages/verify_email.dart';
 import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hexcolor/hexcolor.dart';
+import '../utils/constants.dart';
+import '../models/user_model.dart';
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _RegistrationPageState();
@@ -14,30 +21,55 @@ class RegistrationPage extends StatefulWidget {
 }
 
 class _RegistrationPageState extends State<RegistrationPage> {
-  EmailOTP myAuth = EmailOTP();
-
-  Future<void> sendOtp(String email) async {
-    myAuth.setConfig(
-        appEmail: "freelancer2capitalist@gmail.com",
-        appName: "Freelancer2Capitalist",
-        userEmail: email,
-        otpLength: 4,
-        otpType: OTPType.digitsOnly);
-    try {
-      if (await myAuth.sendOTP() == true) {
-        print("otp sent");
-      } else {
-        print("falied");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   String errorText = '';
   final _formKey = GlobalKey<FormState>();
   bool checkedValue = false;
   bool checkboxValue = false;
+  void signUp(String email, String password) async {
+    UserCredential? credential;
+    try {
+      credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseAuthException catch (ex) {
+      log(ex.code.toString());
+    }
+
+    if (credential != null) {
+      String uid = credential.user!.uid;
+      UserModel newUser = UserModel(
+        uid: uid,
+        email: email,
+        fullname: "",
+        profilepic: "",
+        bio: "",
+        gender: "",
+        userType: "",
+        lastSeen: DateTime.now(),
+        isActive: true,
+        isTyping: false,
+      );
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(uid)
+          .set(newUser.toMap())
+          .then((value) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) => VerifyEmail(
+                      newUser: newUser,
+                      credential: credential!.user!,
+                    )),
+            (Route<dynamic> route) => false);
+        log("new user created");
+        Constants.prefs?.setBool("loggedIn", true);
+      }).onError((error, stackTrace) {
+        log("Error ${error.toString()}");
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
@@ -62,55 +94,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        // GestureDetector(
-                        //   child: Stack(
-                        //     children: [
-                        //       Container(
-                        //         padding: const EdgeInsets.all(10),
-                        //         decoration: BoxDecoration(
-                        //           borderRadius: BorderRadius.circular(100),
-                        //           border:
-                        //               Border.all(width: 5, color: Colors.white),
-                        //           color: Colors.white,
-                        //           boxShadow: [
-                        //             const BoxShadow(
-                        //               color: Colors.black12,
-                        //               blurRadius: 20,
-                        //               offset: Offset(5, 5),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //         child: Icon(
-                        //           Icons.person,
-                        //           color: Colors.grey.shade300,
-                        //           size: 80.0,
-                        //         ),
-                        //       ),
-                        //       Container(
-                        //         padding:
-                        //             const EdgeInsets.fromLTRB(80, 80, 0, 0),
-                        //         child: Icon(
-                        //           Icons.add_circle,
-                        //           color: Colors.grey.shade700,
-                        //           size: 25.0,
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        // const SizedBox(
-                        //   height: 30,
-                        // ),
-                        // Container(
-                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                        //   child: TextFormField(
-                        //     decoration: ThemeHelper().textInputDecoration(
-                        //       'Name',
-                        //       'Enter your first name',
-                        //     ),
-                        //   ),
-                        // ),
-
                         const SizedBox(height: 20.0),
                         Container(
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -129,22 +112,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             },
                           ),
                         ),
-                        // SizedBox(height: 20.0),
-                        // Container(
-                        //   child: TextFormField(
-                        //     decoration: ThemeHelper().textInputDecoration(
-                        //         "Mobile Number",
-                        //         "Enter your mobile number"),
-                        //     keyboardType: TextInputType.phone,
-                        //     validator: (val) {
-                        //       if(!(val!.isEmpty) && !RegExp(r"^(\d+)*$").hasMatch(val)){
-                        //         return "Enter a valid phone number";
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
-                        // ),
                         const SizedBox(height: 20.0),
                         Container(
                           decoration: ThemeHelper().inputBoxDecorationShaddow(),
@@ -177,49 +144,42 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             },
                           ),
                         ),
-                        // const SizedBox(height: 15.0),
-                        // FormField<bool>(
-                        //   builder: (state) {
-                        //     return Column(
-                        //       children: <Widget>[
-                        //         Row(
-                        //           children: <Widget>[
-                        //             Checkbox(
-                        //                 value: checkboxValue,
-                        //                 onChanged: (value) {
-                        //                   setState(() {
-                        //                     checkboxValue = value!;
-                        //                     state.didChange(value);
-                        //                   });
-                        //                 }),
-                        //             const Text(
-                        //               "I accept all terms and conditions.",
-                        //               style: TextStyle(color: Colors.grey),
-                        //             ),
-                        //           ],
-                        //         ),
-                        //         Container(
-                        //           alignment: Alignment.centerLeft,
-                        //           child: Text(
-                        //             state.errorText ?? '',
-                        //             textAlign: TextAlign.left,
-                        //             style: TextStyle(
-                        //               color:
-                        //                   Theme.of(context).colorScheme.error,
-                        //               fontSize: 12,
-                        //             ),
-                        //           ),
-                        //         )
-                        //       ],
-                        //     );
-                        //   },
-                        //   validator: (value) {
-                        //     if (!checkboxValue) {
-                        //       return 'You need to accept terms and conditions';
-                        //     } else {
+                        // Text.rich(
+                        //   TextSpan(children: [
+                        //     TextSpan(
+                        //       text: 'Send',
+                        //       recognizer: TapGestureRecognizer()
+                        //         ..onTap = () async {
+                        //           showDialog(
+                        //             context: context,
+                        //             builder: (BuildContext context) {
+                        //               return ThemeHelper().alartDialog(
+                        //                   "Successful",
+                        //                   "Verification code send successful.",
+                        //                   context);
+                        //             },
+                        //           );
+                        //         },
+                        //       style: const TextStyle(
+                        //           fontWeight: FontWeight.bold,
+                        //           color: Colors.orange),
+                        //     ),
+                        //   ]),
+                        // ),
+                        // Container(
+                        //   decoration: ThemeHelper().inputBoxDecorationShaddow(),
+                        //   child: TextFormField(
+                        //     controller: otpController,
+                        //     obscureText: true,
+                        //     decoration: ThemeHelper().textInputDecoration(
+                        //         "Password*", "Enter your otp"),
+                        //     validator: (val) {
+                        //       if (val!.isEmpty) {
+                        //         return "Please enter your otp";
+                        //       }
                         //       return null;
-                        //     }
-                        //   },
+                        //     },
+                        //   ),
                         // ),
                         const SizedBox(height: 20.0),
                         Container(
@@ -239,21 +199,23 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                 ),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 if (passwordController.text ==
                                     confirmPasswordController.text) {
-                                  sendOtp(emailController.text);
-                                  Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            ForgotPasswordVerificationPage(
-                                          myAuth: myAuth,
-                                          email: emailController.text,
-                                          password: passwordController.text,
-                                        ),
-                                      ));
+                                  signUp(emailController.text,
+                                      passwordController.text);
+                                  // sendOtp(emailController.text);
+                                  // Navigator.pushReplacement(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           ForgotPasswordVerificationPage(
+                                  //         myAuth: myAuth,
+                                  //         email: emailController.text,
+                                  //         password: passwordController.text,
+                                  //       ),
+                                  //     ));
                                 } else {
                                   setState(() {
                                     errorText =

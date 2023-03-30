@@ -1,12 +1,13 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:freelancer2capitalist/pages/forgot_password_verification_page.dart';
+import 'package:freelancer2capitalist/pages/onboarding/onBoarding.dart';
 import 'package:freelancer2capitalist/pages/profile_page.dart';
-import 'package:freelancer2capitalist/pages/registration_page.dart';
-import 'package:freelancer2capitalist/pages/reset_password.dart';
-import 'package:freelancer2capitalist/pages_old/registration.dart';
-
+import '../models/FirebaseHelper.dart';
+import '../models/user_model.dart';
 import '../utils/constants.dart';
 import 'login_page.dart';
 
@@ -21,16 +22,51 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   bool _isVisible = false;
+  User? currentUser = FirebaseAuth.instance.currentUser;
+  UserModel? newUserModel;
+  // bool checkLogInState = false;
+
+  // Future<void> checkLogIn() async {
+  //   if (currentUser != null) {
+  //     UserModel? thisUserModel =
+  //         await FirebaseHelper.getUserModelById(currentUser!.uid);
+  //     if (thisUserModel != null) {
+  //       newUserModel = thisUserModel;
+  //       checkLogInState = true;
+  //     } else {
+  //       checkLogInState = false;
+  //     }
+  //   } else {
+  //     checkLogInState = false;
+  //   }
+  // }
 
   _SplashScreenState() {
-    Timer(const Duration(milliseconds: 2000), () {
+    Timer(const Duration(milliseconds: 2000), () async {
+      if (currentUser != null) {
+        newUserModel = await FirebaseHelper.getUserModelById(currentUser!.uid);
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser!.uid)
+            .update({'isActive': true});
+      }
       setState(() {
+        // checkLogIn();
+        // var snackBar = SnackBar(
+        //   content: Text(newUserModel.toString()),
+        // );
+        // ScaffoldMessenger.of(context).showSnackBar(snackBar);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
-                builder: (context) => //ResetPassword()),
-                    Constants.prefs?.getBool("loggedIn") == true
-                        ? const ProfilePage()
-                        : const LoginPage()),
+                builder: (context) => //ChatUserCard()),
+                    // checkLogInState == true
+                    currentUser != null
+                        ? ProfilePage(
+                            usermodel: newUserModel!,
+                            firebaseUser: currentUser!,
+                          )
+                        : OnBoarding()),
             (route) => false);
       });
     });
