@@ -7,9 +7,9 @@
         tools:overrideLibrary="io.flutter.plugins.firebase.database" />
 
     <application
-        android:label="freelancer2capitalist"
+        android:label="E-Shark"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/androidlogo">
         <activity
             android:name=".MainActivity"
             android:exported="true"
