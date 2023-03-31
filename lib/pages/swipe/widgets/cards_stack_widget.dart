@@ -66,6 +66,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           field: doc.get('field'),
           firmImages: doc.get('firmImage'),
           creator: firebaseFirestore.get('fullname'),
+          creatorUid: doc.get('uid'),
         );
       }));
 

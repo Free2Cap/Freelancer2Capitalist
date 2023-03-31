@@ -31,6 +31,7 @@ class Firm {
     required this.field,
     required this.firmImages,
     required this.creator,
+    required this.creatorUid,
   });
   final String uid;
   final String name;
@@ -40,4 +41,5 @@ class Firm {
   final String field;
   final String firmImages;
   final String creator;
+  final String creatorUid;
 }

@@ -28,11 +28,13 @@ class _CurveNavigationWidgetState extends State<CurveNavigationWidget> {
   @override
   Widget build(BuildContext context) {
     final screens = [
+      ChatUserCard(
+          userModel: widget.userModel, firebaseUser: widget.firebaseUser),
       SwipeCard(
           userType: widget.userModel.userType
               .toString()), //due to this line the error_patch.dart
-      ChatUserCard(
-          userModel: widget.userModel, firebaseUser: widget.firebaseUser),
+      // ChatUserCard(
+      //     userModel: widget.userModel, firebaseUser: widget.firebaseUser),
       ProfilePage(
           firebaseUser: widget.firebaseUser, usermodel: widget.userModel),
     ];
