@@ -19,6 +19,7 @@ import 'package:freelancer2capitalist/pages/widgets/header_widget.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/UIHelper.dart';
 import '../models/user_model.dart';
+import 'navigator/widgets/curved_navigation.dart';
 
 class CompleteProfile extends StatefulWidget {
   final UserModel userModel;
@@ -168,8 +169,8 @@ class _CompleteProfileState extends State<CompleteProfile> {
         .then((value) {
       log("Data uploaded");
       Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return ProfilePage(
-          usermodel: widget.userModel,
+        return CurveNavigationWidget(
+          userModel: widget.userModel,
           firebaseUser: widget.firebaseUser,
         );
       }));
@@ -487,8 +488,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                     ),
                   ),
                   minimumSize: MaterialStateProperty.all<Size>(
-                    Size(100,
-                        50), 
+                    Size(100, 50),
                   ),
                 ),
                 onPressed: () {
@@ -498,8 +498,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                   height: 30,
                   child: Text(
                     'Submit',
-                    textAlign: TextAlign
-                        .center, 
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18.0,

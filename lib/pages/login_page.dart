@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freelancer2capitalist/common/theme_helper.dart';
 import 'package:freelancer2capitalist/models/user_model.dart';
+import 'package:freelancer2capitalist/pages/navigator/widgets/curved_navigation.dart';
 import 'package:freelancer2capitalist/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -225,9 +226,9 @@ class _LoginPageState extends State<LoginPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ProfilePage(
+                                                    CurveNavigationWidget(
                                                       firebaseUser: user,
-                                                      usermodel: userModel,
+                                                      userModel: userModel,
                                                     )));
                                       } else {
                                         const snackdemo = SnackBar(

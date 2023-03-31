@@ -28,10 +28,10 @@ class _ChatUserCardState extends State<ChatUserCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).secondaryHeaderColor,
-        title: const Text("Chat Panel"),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).secondaryHeaderColor,
+      //   title: const Text("Chat Panel"),
+      // ),
       body: SafeArea(
         child: Container(
           child: StreamBuilder(
@@ -78,7 +78,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                                     context,
                                     MaterialPageRoute(builder: (context) {
                                       return ChatRoom(
-                                        chatVisitedNotifierId: _isChatRoomVisitedId,
+                                        chatVisitedNotifierId:
+                                            _isChatRoomVisitedId,
                                         chatVisitedNotifier: _isChatRoomVisited,
                                         firebaseUser: widget.firebaseUser,
                                         userModel: widget.userModel,

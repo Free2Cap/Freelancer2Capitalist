@@ -46,269 +46,269 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Profile Page",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        elevation: 0.5,
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[
-                Theme.of(context).primaryColor,
-                Theme.of(context).colorScheme.secondary,
-              ])),
-        ),
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(
-              top: 2,
-              right: 5,
-            ),
-            child: GestureDetector(
-              onTap: () async {
-                UIHelper.showConfirmationAlertDialog(
-                  context,
-                  "Logout",
-                  "Are you sure you want to log out?",
-                  (bool confirmed) {
-                    if (confirmed) {
-                      UIHelper.showLoadingDialog(context, "Logging Out...");
-                      FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(widget.usermodel.uid)
-                          .update({'isActive': false});
-                      FirebaseAuth.instance.signOut().then((value) {
-                        Navigator.popUntil(context, (route) => route.isFirst);
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const LoginPage(),
-                          ),
-                        );
-                      });
-                    }
-                  },
-                );
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.logout_rounded,
-                    size: 35.0,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 0.5),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-      drawer: Drawer(
-        child: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  stops: const [
-                0.0,
-                1.0
-              ],
-                  colors: [
-                Theme.of(context).primaryColor.withOpacity(0.2),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-              ])),
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: const [0.0, 1.0],
-                    colors: [
-                      Theme.of(context).primaryColor,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                ),
-                child: Container(
-                  alignment: Alignment.bottomLeft,
-                  child: const Text(
-                    "Free2Cap",
-                    style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              // ListTile(
-              //   leading: Icon(
-              //     Icons.screen_lock_landscape_rounded,
-              //     size: _drawerIconSize,
-              //     color: Theme.of(context).colorScheme.secondary,
-              //   ),
-              //   title: Text(
-              //     'Splash Screen',
-              //     style: TextStyle(
-              //         fontSize: 17,
-              //         color: Theme.of(context).colorScheme.secondary),
-              //   ),
-              //   onTap: () {
-              //     Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (context) =>
-              //                 SplashScreen(title: "Splash Screen")));
-              //   },
-              // ),
-              // ListTile(
-              //   leading: Icon(Icons.login_rounded,
-              //       size: _drawerIconSize,
-              //       color: Theme.of(context).colorScheme.secondary),
-              //   title: Text(
-              //     'Login Page',
-              //     style: TextStyle(
-              //         fontSize: _drawerFontSize,
-              //         color: Theme.of(context).colorScheme.secondary),
-              //   ),
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => const LoginPage()),
-              //     );
-              //   },
-              // ),
-              // Divider(
-              //   color: Theme.of(context).primaryColor,
-              //   height: 1,
-              // ),
-              // ListTile(
-              //   leading: Icon(Icons.person_add_alt_1,
-              //       size: _drawerIconSize,
-              //       color: Theme.of(context).colorScheme.secondary),
-              //   title: Text(
-              //     'Registration Page',
-              //     style: TextStyle(
-              //         fontSize: _drawerFontSize,
-              //         color: Theme.of(context).colorScheme.secondary),
-              //   ),
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => const RegistrationPage()),
-              //     );
-              //   },
-              // ),
-              // Divider(
-              //   color: Theme.of(context).primaryColor,
-              //   height: 1,
-              // ),
-              ListTile(
-                leading: Icon(
-                  Icons.password_rounded,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Dashboard',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SwipeCard(
-                              userType: widget.usermodel.userType.toString(),
-                            )),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.chat,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Chat Panel',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ChatUserCard(
-                              userModel: widget.usermodel,
-                              firebaseUser: widget.firebaseUser,
-                            )),
-                    //const ForgotPasswordVerificationPage()),
-                  );
-                },
-              ),
-              Divider(
-                color: Theme.of(context).primaryColor,
-                height: 1,
-              ),
-              ListTile(
-                leading: Icon(
-                  Icons.logout_rounded,
-                  size: _drawerIconSize,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                title: Text(
-                  'Logout',
-                  style: TextStyle(
-                      fontSize: _drawerFontSize,
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                onTap: () async {
-                  // await GoogleSignIn().disconnect();
-                  UIHelper.showConfirmationAlertDialog(
-                    context,
-                    "Logout",
-                    "Are you sure you want to log out?",
-                    (bool confirmed) {
-                      if (confirmed) {
-                        UIHelper.showLoadingDialog(context, "Logging Out...");
-                        FirebaseFirestore.instance
-                            .collection('users')
-                            .doc(widget.usermodel.uid)
-                            .update({'isActive': false});
-                        FirebaseAuth.instance.signOut().then((value) {
-                          Navigator.popUntil(context, (route) => route.isFirst);
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const LoginPage(),
-                            ),
-                          );
-                        });
-                      }
-                    },
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: const Text(
+      //     "Profile Page",
+      //     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+      //   ),
+      //   elevation: 0.5,
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      //   flexibleSpace: Container(
+      //     decoration: BoxDecoration(
+      //         gradient: LinearGradient(
+      //             begin: Alignment.topLeft,
+      //             end: Alignment.bottomRight,
+      //             colors: <Color>[
+      //           Theme.of(context).primaryColor,
+      //           Theme.of(context).colorScheme.secondary,
+      //         ])),
+      //   ),
+      //   actions: [
+      //     Container(
+      //       margin: const EdgeInsets.only(
+      //         top: 2,
+      //         right: 5,
+      //       ),
+      //       child: GestureDetector(
+      //         onTap: () async {
+      //           UIHelper.showConfirmationAlertDialog(
+      //             context,
+      //             "Logout",
+      //             "Are you sure you want to log out?",
+      //             (bool confirmed) {
+      //               if (confirmed) {
+      //                 UIHelper.showLoadingDialog(context, "Logging Out...");
+      //                 FirebaseFirestore.instance
+      //                     .collection('users')
+      //                     .doc(widget.usermodel.uid)
+      //                     .update({'isActive': false});
+      //                 FirebaseAuth.instance.signOut().then((value) {
+      //                   Navigator.popUntil(context, (route) => route.isFirst);
+      //                   Navigator.pushReplacement(
+      //                     context,
+      //                     MaterialPageRoute(
+      //                       builder: (context) => const LoginPage(),
+      //                     ),
+      //                   );
+      //                 });
+      //               }
+      //             },
+      //           );
+      //         },
+      //         child: Row(
+      //           mainAxisSize: MainAxisSize.min,
+      //           children: [
+      //             Icon(
+      //               Icons.logout_rounded,
+      //               size: 35.0,
+      //               color: Colors.white,
+      //             ),
+      //             SizedBox(width: 0.5),
+      //           ],
+      //         ),
+      //       ),
+      //     )
+      //   ],
+      // ),
+      // drawer: Drawer(
+      //   child: Container(
+      //     decoration: BoxDecoration(
+      //         gradient: LinearGradient(
+      //             begin: Alignment.topLeft,
+      //             end: Alignment.bottomRight,
+      //             stops: const [
+      //           0.0,
+      //           1.0
+      //         ],
+      //             colors: [
+      //           Theme.of(context).primaryColor.withOpacity(0.2),
+      //           Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+      //         ])),
+      //     child: ListView(
+      //       children: [
+      //         DrawerHeader(
+      //           decoration: BoxDecoration(
+      //             color: Theme.of(context).primaryColor,
+      //             gradient: LinearGradient(
+      //               begin: Alignment.topLeft,
+      //               end: Alignment.bottomRight,
+      //               stops: const [0.0, 1.0],
+      //               colors: [
+      //                 Theme.of(context).primaryColor,
+      //                 Theme.of(context).colorScheme.secondary,
+      //               ],
+      //             ),
+      //           ),
+      //           child: Container(
+      //             alignment: Alignment.bottomLeft,
+      //             child: const Text(
+      //               "Free2Cap",
+      //               style: TextStyle(
+      //                   fontSize: 25,
+      //                   color: Colors.white,
+      //                   fontWeight: FontWeight.bold),
+      //             ),
+      //           ),
+      //         ),
+      // ListTile(
+      //   leading: Icon(
+      //     Icons.screen_lock_landscape_rounded,
+      //     size: _drawerIconSize,
+      //     color: Theme.of(context).colorScheme.secondary,
+      //   ),
+      //   title: Text(
+      //     'Splash Screen',
+      //     style: TextStyle(
+      //         fontSize: 17,
+      //         color: Theme.of(context).colorScheme.secondary),
+      //   ),
+      //   onTap: () {
+      //     Navigator.push(
+      //         context,
+      //         MaterialPageRoute(
+      //             builder: (context) =>
+      //                 SplashScreen(title: "Splash Screen")));
+      //   },
+      // ),
+      // ListTile(
+      //   leading: Icon(Icons.login_rounded,
+      //       size: _drawerIconSize,
+      //       color: Theme.of(context).colorScheme.secondary),
+      //   title: Text(
+      //     'Login Page',
+      //     style: TextStyle(
+      //         fontSize: _drawerFontSize,
+      //         color: Theme.of(context).colorScheme.secondary),
+      //   ),
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const LoginPage()),
+      //     );
+      //   },
+      // ),
+      // Divider(
+      //   color: Theme.of(context).primaryColor,
+      //   height: 1,
+      // ),
+      // ListTile(
+      //   leading: Icon(Icons.person_add_alt_1,
+      //       size: _drawerIconSize,
+      //       color: Theme.of(context).colorScheme.secondary),
+      //   title: Text(
+      //     'Registration Page',
+      //     style: TextStyle(
+      //         fontSize: _drawerFontSize,
+      //         color: Theme.of(context).colorScheme.secondary),
+      //   ),
+      //   onTap: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const RegistrationPage()),
+      //     );
+      //   },
+      // ),
+      // Divider(
+      //   color: Theme.of(context).primaryColor,
+      //   height: 1,
+      // ),
+      //         ListTile(
+      //           leading: Icon(
+      //             Icons.password_rounded,
+      //             size: _drawerIconSize,
+      //             color: Theme.of(context).colorScheme.secondary,
+      //           ),
+      //           title: Text(
+      //             'Dashboard',
+      //             style: TextStyle(
+      //                 fontSize: _drawerFontSize,
+      //                 color: Theme.of(context).colorScheme.secondary),
+      //           ),
+      //           onTap: () {
+      //             Navigator.push(
+      //               context,
+      //               MaterialPageRoute(
+      //                   builder: (context) => SwipeCard(
+      //                         userType: widget.usermodel.userType.toString(),
+      //                       )),
+      //             );
+      //           },
+      //         ),
+      //         Divider(
+      //           color: Theme.of(context).primaryColor,
+      //           height: 1,
+      //         ),
+      //         ListTile(
+      //           leading: Icon(
+      //             Icons.chat,
+      //             size: _drawerIconSize,
+      //             color: Theme.of(context).colorScheme.secondary,
+      //           ),
+      //           title: Text(
+      //             'Chat Panel',
+      //             style: TextStyle(
+      //                 fontSize: _drawerFontSize,
+      //                 color: Theme.of(context).colorScheme.secondary),
+      //           ),
+      //           onTap: () {
+      //             Navigator.push(
+      //               context,
+      //               MaterialPageRoute(
+      //                   builder: (context) => ChatUserCard(
+      //                         userModel: widget.usermodel,
+      //                         firebaseUser: widget.firebaseUser,
+      //                       )),
+      //               //const ForgotPasswordVerificationPage()),
+      //             );
+      //           },
+      //         ),
+      //         Divider(
+      //           color: Theme.of(context).primaryColor,
+      //           height: 1,
+      //         ),
+      //         ListTile(
+      //           leading: Icon(
+      //             Icons.logout_rounded,
+      //             size: _drawerIconSize,
+      //             color: Theme.of(context).colorScheme.secondary,
+      //           ),
+      //           title: Text(
+      //             'Logout',
+      //             style: TextStyle(
+      //                 fontSize: _drawerFontSize,
+      //                 color: Theme.of(context).colorScheme.secondary),
+      //           ),
+      //           onTap: () async {
+      //             // await GoogleSignIn().disconnect();
+      //             UIHelper.showConfirmationAlertDialog(
+      //               context,
+      //               "Logout",
+      //               "Are you sure you want to log out?",
+      //               (bool confirmed) {
+      //                 if (confirmed) {
+      //                   UIHelper.showLoadingDialog(context, "Logging Out...");
+      //                   FirebaseFirestore.instance
+      //                       .collection('users')
+      //                       .doc(widget.usermodel.uid)
+      //                       .update({'isActive': false});
+      //                   FirebaseAuth.instance.signOut().then((value) {
+      //                     Navigator.popUntil(context, (route) => route.isFirst);
+      //                     Navigator.pushReplacement(
+      //                       context,
+      //                       MaterialPageRoute(
+      //                         builder: (context) => const LoginPage(),
+      //                       ),
+      //                     );
+      //                   });
+      //                 }
+      //               },
+      //             );
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: Stack(
           children: [
@@ -447,7 +447,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 184, 4, 208),
+                                  const Color.fromARGB(255, 184, 4, 208),
                                 ),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
@@ -456,7 +456,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(100.0, 50.0),
+                                  const Size(100.0, 50.0),
                                 ),
                               ),
                               onPressed: () {
@@ -484,19 +484,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                         "Freelancer"
                                     ? "Project List"
                                     : "Firm Profile",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 15.0,
                                   // fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            SizedBox(width: 5),
+                            const SizedBox(width: 5),
                             ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(
-                                  Color.fromARGB(255, 184, 4, 208),
+                                  const Color.fromARGB(255, 184, 4, 208),
                                 ),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
@@ -505,7 +505,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(100,
+                                  const Size(100,
                                       50), // set the desired button size here
                                 ),
                               ),
@@ -520,7 +520,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 );
                               },
-                              child: Text(
+                              child: const Text(
                                 'Edit Profile',
                                 style: TextStyle(
                                   color: Colors.white,
@@ -538,6 +538,34 @@ class _ProfilePageState extends State<ProfilePage> {
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          UIHelper.showConfirmationAlertDialog(
+            context,
+            "Logout",
+            "Are you sure you want to log out?",
+            (bool confirmed) {
+              if (confirmed) {
+                UIHelper.showLoadingDialog(context, "Logging Out...");
+                FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(widget.usermodel.uid)
+                    .update({'isActive': false});
+                FirebaseAuth.instance.signOut().then((value) {
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginPage(),
+                    ),
+                  );
+                });
+              }
+            },
+          );
+        },
+        child: const Icon(Icons.logout_outlined),
       ),
     );
   }

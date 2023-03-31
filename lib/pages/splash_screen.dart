@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:freelancer2capitalist/pages/navigator/widgets/curved_navigation.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,8 +63,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 builder: (context) => //ChatUserCard()),
                     // checkLogInState == true
                     currentUser != null
-                        ? ProfilePage(
-                            usermodel: newUserModel!,
+                        ? CurveNavigationWidget(
+                            userModel: newUserModel!,
                             firebaseUser: currentUser!,
                           )
                         : OnBoarding()),
