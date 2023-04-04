@@ -26,7 +26,8 @@ class CustomCircleAvatar extends StatelessWidget {
 
 class ChatHelper {
   Future<ChatRoomModel?> getChatRoomModel(
-      UserModel targetUser, UserModel currentUser) async {
+      UserModel targetUser, UserModel currentUser,
+      [String? projectUid]) async {
     ChatRoomModel? chatRoom;
 
     QuerySnapshot snapshotDocs = await FirebaseFirestore.instance
@@ -41,6 +42,14 @@ class ChatHelper {
       ChatRoomModel existingChatRoom =
           ChatRoomModel.fromMap(docData as Map<String, dynamic>);
 
+      if (projectUid != null) {
+        if (!existingChatRoom.projects!.contains(projectUid)) {
+          existingChatRoom.projects?.add(projectUid);
+          await snapshotDocs.docs[0].reference.update({
+            "projects": FieldValue.arrayUnion([projectUid])
+          });
+        }
+      }
       chatRoom = existingChatRoom;
     } else {
       //create a new one
@@ -52,7 +61,8 @@ class ChatHelper {
             targetUser.uid.toString(): true
           },
           sequnece: DateTime.now(),
-          users: [currentUser.uid.toString(), targetUser.uid.toString()]);
+          users: [currentUser.uid.toString(), targetUser.uid.toString()],
+          projects: [projectUid]);
       try {
         await FirebaseFirestore.instance
             .collection("chatrooms")

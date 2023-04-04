@@ -14,9 +14,9 @@
 //   final AgoraClient _client = AgoraClient(
 //     agoraConnectionData: AgoraConnectionData(
 //       appId: 'e48dfe62bf1444e39d65a3b4bdbb90c7',
-//       channelName: 'freelancer2capitalist',
+//       channelName: 'video',
 //       tempToken:
-//           '007eJxTYIh7UijarGF1+3zXtY/WJ2tDKwqsTfXZ73dMeL1dfEPdXUsFhlQTi5S0VDOjpDRDExOTVGPLFDPTROMkk6SUpCRLg2TzwpOsKQ2BjAyVK2YxMEIhiC/KkFaUmpqTmJecWmSUnFiQWZKYk1lcwsAAAPK5Jyc=',
+//           '007eJxTYHjgtaX70kPjv33mr76L+Dc/32J60jDqoJZY1wMWpZiNs+4pMKSaWKSkpZoZJaUZmpiYpBpbppiZJhonmSSlJCVZGiSbL5TSTmkIZGRQamxkZWSAQBCflaEsMyU1n4EBAPknIN4=',
 //     ),
 //   );
 

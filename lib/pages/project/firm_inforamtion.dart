@@ -41,6 +41,7 @@ class _FirmInformationState extends State<FirmInformation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.purple,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -50,12 +51,12 @@ class _FirmInformationState extends State<FirmInformation> {
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             InkWell(
-              child: const Icon(Icons.business),
+              child: const Icon(Icons.business, color: Colors.white),
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const FirmForm()),
               ),
-            )
+            ),
           ],
         ),
       ),

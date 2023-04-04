@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:freelancer2capitalist/pages/chat_pages/video_call/screens/pickup_layout.dart';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -39,22 +40,24 @@ class _CurveNavigationWidgetState extends State<CurveNavigationWidget> {
           firebaseUser: widget.firebaseUser, usermodel: widget.userModel),
     ];
 
-    return Scaffold(
-      body: screens[index],
-      bottomNavigationBar: CurvedNavigationBar(
-        color: pinkColor,
-        backgroundColor: Colors.white,
-        height: 70,
-        index: index,
-        items: const [
-          Icon(Icons.favorite_rounded, size: 30, color: Colors.white),
-          Icon(Icons.chat_rounded, size: 30, color: Colors.white),
-          Icon(Icons.person_rounded, size: 30, color: Colors.white),
-        ],
-        key: _bottomNavigationKey,
-        onTap: (index) => setState(() {
-          this.index = index;
-        }),
+    return PickupLayout(
+      scaffold: Scaffold(
+        body: screens[index],
+        bottomNavigationBar: CurvedNavigationBar(
+          color: Colors.purple,
+          backgroundColor: Colors.white,
+          height: 70,
+          index: index,
+          items: const [
+            Icon(Icons.favorite_rounded, size: 30, color: Colors.white),
+            Icon(Icons.chat_rounded, size: 30, color: Colors.white),
+            Icon(Icons.person_rounded, size: 30, color: Colors.white),
+          ],
+          key: _bottomNavigationKey,
+          onTap: (index) => setState(() {
+            this.index = index;
+          }),
+        ),
       ),
     );
   }

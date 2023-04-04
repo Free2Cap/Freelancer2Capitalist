@@ -25,7 +25,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
     with SingleTickerProviderStateMixin {
   List<dynamic> draggableItems = [];
 
-  void _createUserTargetChatRoom(String targetUid) async {
+  void _createUserTargetChatRoom(String targetUid, String projectUid) async {
     try {
       ChatHelper chatHelper = ChatHelper();
       String user = FirebaseAuth.instance.currentUser!.uid;
@@ -33,7 +33,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
       UserModel? targetUserModel =
           await FirebaseHelper.getUserModelById(targetUid);
       // log('current:${currentUserModel?.fullname.toString()} \n target:${targetUserModel?.fullname.toString()} \n uid:${draggableItems.last.creatorUid}');
-      await chatHelper.getChatRoomModel(targetUserModel!, currentUserModel!);
+      await chatHelper.getChatRoomModel(targetUserModel!, currentUserModel!,
+          widget.userType == 'Investor' ? projectUid : null);
     } on Exception catch (ex) {
       log(ex.toString());
     }
@@ -148,19 +149,20 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                   return PositionedTransition(
                     rect: RelativeRectTween(
                       begin: RelativeRect.fromSize(
-                          const Rect.fromLTWH(0, 0, 580, 340),
-                          const Size(580, 340)),
+                          const Rect.fromLTWH(0, 0, 300, 200),
+                          const Size(300, 200)),
                       end: RelativeRect.fromSize(
-                          Rect.fromLTWH(
-                              swipe != Swipe.none
-                                  ? swipe == Swipe.left
-                                      ? -300
-                                      : 300
-                                  : 0,
-                              0,
-                              580,
-                              340),
-                          const Size(580, 340)),
+                        Rect.fromLTWH(
+                            swipe != Swipe.none
+                                ? swipe == Swipe.left
+                                    ? -150
+                                    : 150
+                                : 0,
+                            0,
+                            300,
+                            200),
+                        const Size(300, 200),
+                      ),
                     ).animate(CurvedAnimation(
                       parent: _animationController,
                       curve: Curves.easeInOut,
@@ -202,7 +204,7 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
           ),
         ),
         Positioned(
-          bottom: 10,
+          bottom: -8,
           left: 0,
           right: 0,
           child: Padding(
@@ -251,7 +253,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
                     _animationController.forward();
                     log('swipped right');
                     try {
-                      _createUserTargetChatRoom(draggableItems.last.creatorUid);
+                      _createUserTargetChatRoom(draggableItems.last.creatorUid,
+                          draggableItems.last.uid);
                     } on StateError catch (ex) {
                       log(ex.toString());
                     }
@@ -307,7 +310,8 @@ class _CardsStackWidgetState extends State<CardsStackWidget>
             },
             onAccept: (int index) {
               setState(() {
-                _createUserTargetChatRoom(draggableItems.last.creatorUid);
+                _createUserTargetChatRoom(
+                    draggableItems.last.creatorUid, draggableItems.last.uid);
                 log('swipped right');
                 draggableItems.removeAt(index);
               });

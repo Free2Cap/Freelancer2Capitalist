@@ -17,20 +17,20 @@ class BackgroudCurveWidget extends StatelessWidget {
         ),
         gradient: LinearGradient(
           colors: <Color>[
-            Color(0xFFFD0E42),
-            Color(0xFFC30F31),
+            Color(0xFF8E24AA),
+            Color(0xFF5E35B1),
           ],
         ),
       ),
       child: const Padding(
-        padding: EdgeInsets.only(top: 46.0, left: 20.0),
+        padding: EdgeInsets.only(top: 30.0, left: 20.0),
         child: Text(
           'E-Shark',
           style: TextStyle(
             fontFamily: 'Nunito',
             fontWeight: FontWeight.w800,
             color: Colors.white,
-            fontSize: 36,
+            fontSize: 30,
           ),
         ),
       ),

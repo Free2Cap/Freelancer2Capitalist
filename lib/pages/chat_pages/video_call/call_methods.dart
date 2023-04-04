@@ -1,11 +1,14 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'callModel.dart';
+import '../../../models/callModel.dart';
 
 class CallMethods {
   final CollectionReference callCollection =
       FirebaseFirestore.instance.collection("call");
+
+  Stream<DocumentSnapshot> callStream({required String uid}) =>
+      callCollection.doc(uid).snapshots();
 
   Future<bool> makeCall({required Call call}) async {
     try {

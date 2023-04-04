@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import '../call_methods.dart';
-import '../callModel.dart';
+import '../../../../models/callModel.dart';
 
 import 'call_screen.dart';
 
@@ -48,6 +48,7 @@ class PickupScreen extends StatelessWidget {
               height: 75,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 IconButton(
                   onPressed: () async {
@@ -63,7 +64,9 @@ class PickupScreen extends StatelessWidget {
                   onPressed: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => CallScreen(call: call)),
+                        builder: (context) => CallScreen(
+                              call: call,
+                            )),
                   ),
                   icon: const Icon(Icons.call),
                   color: Colors.green,

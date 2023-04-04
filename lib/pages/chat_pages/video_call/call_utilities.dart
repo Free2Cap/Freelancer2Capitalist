@@ -1,11 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'callModel.dart';
-import 'videoCall/call_screen.dart';
+import '../../../models/callModel.dart';
+import 'screens/call_screen.dart';
 import 'call_methods.dart';
 
-import '../models/user_model.dart';
+import '../../../models/user_model.dart';
 
 class CallUtils {
   static final CallMethods callMethods = CallMethods();
@@ -27,8 +27,12 @@ class CallUtils {
     call.hasDialled = true;
 
     if (callMade) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => CallScreen(call: call)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CallScreen(
+                    call: call,
+                  )));
     }
   }
 }

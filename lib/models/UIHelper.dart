@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/models/project_model.dart';
 
 class UIHelper {
@@ -168,10 +169,6 @@ class ProjectDetailsDialog extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'OK',
-                    style: TextStyle(fontSize: 18.0),
-                  ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.blue),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
@@ -184,6 +181,10 @@ class ProjectDetailsDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4.0),
                       ),
                     ),
+                  ),
+                  child: const Text(
+                    'OK',
+                    style: TextStyle(fontSize: 18.0),
                   ),
                 ),
               ),
@@ -346,6 +347,114 @@ class dynamicInformatoinViewer extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
       },
+    );
+  }
+}
+
+class ListOfProjects extends StatelessWidget {
+  const ListOfProjects({Key? key, required this.chatRoomModel})
+      : super(key: key);
+
+  final ChatRoomModel chatRoomModel;
+
+  Future<ProjectModel?> getProjectData(String projectId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('projects')
+        .doc(projectId)
+        .get();
+    if (snapshot.exists) {
+      return ProjectModel.fromMap(snapshot.data() as Map<String, dynamic>);
+    } else {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'List of Projects',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16.0),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: chatRoomModel.projects?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  final projectId = chatRoomModel.projects![index];
+                  return FutureBuilder<ProjectModel?>(
+                    future: getProjectData(projectId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasData) {
+                        final project = snapshot.data!;
+                        return InkWell(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  ProjectDetailsDialog(
+                                      project: project.toMap()),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  project.aim!,
+                                  style: const TextStyle(fontSize: 16.0),
+                                ),
+                                const Icon(Icons.arrow_forward_ios_rounded),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    foregroundColor: MaterialStateProperty.all(Colors.white),
+                    padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 8.0,
+                      ),
+                    ),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

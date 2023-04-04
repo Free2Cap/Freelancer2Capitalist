@@ -126,6 +126,7 @@ class _FirmFormState extends State<FirmForm> {
   @override
   void initState() {
     super.initState();
+    String dropdownValue = 'Select a field';
     getFirm(FirebaseAuth.instance.currentUser!.uid).then((value) {
       setState(() {
         firm = value;
@@ -146,7 +147,11 @@ class _FirmFormState extends State<FirmForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Update Firm"),
+        title: const Text("Update Firm", style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 184, 4, 208), // purple color
+        iconTheme: IconThemeData(
+            color: Colors
+                .white), // set the color of the icons in the app bar to white
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -157,8 +162,22 @@ class _FirmFormState extends State<FirmForm> {
               TextField(
                 maxLines: null,
                 controller: company_name,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Name',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -167,8 +186,22 @@ class _FirmFormState extends State<FirmForm> {
               TextField(
                 maxLines: null,
                 controller: company_background,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Background',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -177,8 +210,22 @@ class _FirmFormState extends State<FirmForm> {
               TextField(
                 maxLines: null,
                 controller: company_mission,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Mission',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -188,76 +235,180 @@ class _FirmFormState extends State<FirmForm> {
                 maxLines: null,
                 controller: company_age,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'How many years old is your Firm',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              DropdownButton<String>(
-                value: dropdownValue,
-                onChanged: (String? newValue) {
+              PopupMenuButton<String>(
+                initialValue: dropdownValue,
+                onSelected: (String newValue) {
                   setState(() {
-                    dropdownValue = newValue!;
+                    dropdownValue = newValue;
                   });
                 },
-                items: <String>[
-                  'Select a field',
-                  'Science',
-                  'Technology',
-                  'Engineering',
-                  'Mathematics'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text('Your Budget'),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '\u{20B9}${_budgetRangeValues.start.round()}',
-                    style: TextStyle(color: Theme.of(context).indicatorColor),
-                  ),
-                  Expanded(
-                    child: RangeSlider(
-                      values: _budgetRangeValues,
-                      min: 0,
-                      max: 10000,
-                      divisions: 100,
-                      activeColor: Theme.of(context).primaryColor,
-                      inactiveColor: Colors.black.withOpacity(0.5),
-                      labels: RangeLabels(
-                        '\u{20B9}${_budgetRangeValues.start.round().toString()}',
-                        '\u{20B9}${_budgetRangeValues.end.round().toString()}',
-                      ),
-                      onChanged: (RangeValues values) {
-                        setState(() {
-                          _budgetRangeValues = values;
-                        });
-                      },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'Science',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Science'),
+                        Icon(Icons.science),
+                      ],
                     ),
                   ),
+                  PopupMenuItem<String>(
+                    value: 'Technology',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Technology'),
+                        Icon(Icons.computer),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Engineering',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Engineering'),
+                        Icon(Icons.engineering),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Mathematics',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Mathematics'),
+                        Icon(Icons.calculate),
+                      ],
+                    ),
+                  ),
+                ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.grey[200],
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        dropdownValue,
+                        style: TextStyle(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    '\u{20B9}${_budgetRangeValues.end.round()}',
-                    style: TextStyle(color: Theme.of(context).indicatorColor),
+                    'Select your budget',
+                    style: TextStyle(
+                      // fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\u{20B9}0',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: 50.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25.0),
+                            color: Colors.grey[300],
+                          ),
+                          child: RangeSlider(
+                            values: _budgetRangeValues,
+                            min: 0,
+                            max: 10000,
+                            divisions: 100,
+                            activeColor: Theme.of(context).primaryColor,
+                            inactiveColor: Colors.grey[400],
+                            onChanged: (RangeValues values) {
+                              setState(() {
+                                _budgetRangeValues = values;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '\u{20B9}10K',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\u{20B9}${_budgetRangeValues.start.round()}',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        '\u{20B9}${_budgetRangeValues.end.round()}',
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
               const SizedBox(
                 height: 20,
               ),
-              TextButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   XFile? result = await ImagePicker().pickImage(
                     imageQuality: 30,
@@ -278,7 +429,25 @@ class _FirmFormState extends State<FirmForm> {
                     ScaffoldMessenger.of(context).showSnackBar(snackdemo);
                   }
                 },
-                child: const Text('Select Image'),
+                icon: Icon(Icons.image_outlined),
+                label: Text(
+                  'Select Image',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).primaryColor,
+                  onPrimary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 16.0,
+                    horizontal: 24.0,
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -314,11 +483,20 @@ class _FirmFormState extends State<FirmForm> {
               ElevatedButton(
                 onPressed: () {
                   checkValues();
-                  // UIHelper.showAlertDialog(context,
-                  //     'Submitting Firm Information', "Work in progress");
-                }, //checkValues(),
-                child: const Text('Submit'),
-              ),
+                },
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(fontSize: 20), // set the font size to 20
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: const Color.fromARGB(255, 184, 4, 208),
+                  onPrimary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  minimumSize: const Size(300, 50),
+                ),
+              )
             ],
           ),
         ),
