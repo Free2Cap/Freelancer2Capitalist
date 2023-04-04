@@ -1,7 +1,5 @@
 import 'dart:developer';
-import 'dart:io' show Platform;
-import 'dart:typed_data';
-import 'dart:ui';
+
 import 'package:freelancer2capitalist/models/UIHelper.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/video_call/screens/pickup_layout.dart';
 import 'package:intl/intl.dart' as intl;
@@ -9,7 +7,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:freelancer2capitalist/main.dart';
-import 'package:freelancer2capitalist/models/UIHelper.dart';
 import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/widgets/chat_helper.dart';
 import '../../models/message_model.dart';
@@ -202,49 +199,50 @@ class _ChatRoomState extends State<ChatRoom> {
           actions: [
             if (!kIsWeb) // Show the video call icon only on Android
               Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: PopupMenuButton<String>(
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<String>>[
-                      const PopupMenuItem<String>(
-                        value: 'video',
-                        child: ListTile(
-                          leading: Icon(Icons.video_call),
-                          title: Text('Video Call'),
-                        ),
+                padding: const EdgeInsets.all(20.0),
+                child: PopupMenuButton<String>(
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    const PopupMenuItem<String>(
+                      value: 'video',
+                      child: ListTile(
+                        leading: Icon(Icons.video_call),
+                        title: Text('Video Call'),
                       ),
-                      const PopupMenuItem<String>(
-                        value: 'projects',
-                        child: ListTile(
-                          leading: Icon(Icons.account_balance),
-                          title: Text('Projects'),
-                        ),
+                    ),
+                    const PopupMenuItem<String>(
+                      value: 'projects',
+                      child: ListTile(
+                        leading: Icon(Icons.account_balance),
+                        title: Text('Projects'),
                       ),
-                    ],
-                    onSelected: (String value) {
-                      // Handle selection
-                      if (value == 'video') {
-                        CallUtils.dial(
-                          from: widget.userModel,
-                          to: widget.targetUser,
-                          context: context,
-                        );
-                        // Navigator.of(context).push(
-                        //     MaterialPageRoute(builder: (_) => const VideoCall()));
-                        // UIHelper.showAlertDialog(
-                        //     context, 'Video Call', 'Work in progress');
-                      } else if (value == 'projects') {
-                        log(widget.chatRoom.toString());
-                        showDialog(
-                          context: context,
-                          builder: (_) => ListOfProjects(
-                            chatRoomModel: widget.chatRoom,
-                          ),
-                        );
-                      } else {}
-                    },
-                    child: const Icon(Icons.more_vert_rounded),
-                  )),
+                    ),
+                  ],
+                  onSelected: (String value) {
+                    // Handle selection
+                    if (value == 'video') {
+                      CallUtils.dial(
+                        from: widget.userModel,
+                        to: widget.targetUser,
+                        context: context,
+                      );
+                      // Navigator.of(context).push(
+                      //     MaterialPageRoute(builder: (_) => const VideoCall()));
+                      // UIHelper.showAlertDialog(
+                      //     context, 'Video Call', 'Work in progress');
+                    } else if (value == 'projects') {
+                      log(widget.chatRoom.toString());
+                      showDialog(
+                        context: context,
+                        builder: (_) => ListOfProjects(
+                          chatRoomModel: widget.chatRoom,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Icon(Icons.more_vert_rounded),
+                ),
+              ),
           ],
         ),
         body: SafeArea(
