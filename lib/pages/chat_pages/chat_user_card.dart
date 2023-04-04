@@ -5,7 +5,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/search_page.dart';
-import 'package:freelancer2capitalist/pages/chat_pages/video_call/screens/pickup_layout.dart';
 
 import '../../models/FirebaseHelper.dart';
 import '../../models/UIHelper.dart';
