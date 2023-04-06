@@ -100,8 +100,8 @@ class _SplashScreenState extends State<SplashScreen> {
         duration: const Duration(milliseconds: 1200),
         child: Center(
           child: Container(
-            height: 140.0,
-            width: 140.0,
+            height: 300.0,
+            width: 300.0,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
@@ -113,12 +113,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     spreadRadius: 2.0,
                   )
                 ]),
-            child: const Center(
+            child:  Center(
               child: ClipOval(
-                child: Icon(
-                  Icons.android_outlined,
-                  size: 128,
-                ), //put your logo here
+                child: Image.asset('logo/logo2.png'), //put your logo here
               ),
             ),
           ),
