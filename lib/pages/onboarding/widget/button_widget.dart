@@ -7,7 +7,7 @@ class ButtonWidget extends StatelessWidget {
   const ButtonWidget({
     Key? key,
     required this.text,
-    required this.onClicked,
+    required this.onClicked, required EdgeInsets padding,
   }) : super(key: key);
 
   @override

@@ -284,6 +284,7 @@ class _ChatRoomState extends State<ChatRoom> {
           //       ),
           //     ),
           // ],
+          
         ),
       body: SafeArea(
         child: Column(
