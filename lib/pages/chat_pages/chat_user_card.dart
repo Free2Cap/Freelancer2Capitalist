@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:freelancer2capitalist/models/chat_room_model.dart';
 import 'package:freelancer2capitalist/pages/chat_pages/search_page.dart';
+// import 'package:freelancer2capitalist/pages/chat_pages/video_call/screens/pickup_layout.dart';
 
 import '../../models/FirebaseHelper.dart';
 import '../../models/UIHelper.dart';
@@ -28,10 +29,18 @@ class _ChatUserCardState extends State<ChatUserCard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).secondaryHeaderColor,
-      //   title: const Text("Chat Panel"),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.purple,
+        centerTitle: true,
+        title: Text(
+          "Chats",
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Container(
           child: StreamBuilder(
@@ -89,22 +98,57 @@ class _ChatUserCardState extends State<ChatUserCard> {
                                     }),
                                   );
                                 },
-                                leading: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      targetUser.profilepic.toString()),
-                                ),
-                                title: Text(targetUser.fullname.toString()),
-                                subtitle: (chatRoomModel.lastMessage
-                                            .toString() !=
-                                        "")
-                                    ? Text(chatRoomModel.lastMessage.toString())
-                                    : Text(
-                                        "Say hi to ${targetUser.fullname}",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSecondary),
+                                leading: Container(
+                                  width: 70,
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.purple,
+                                      width: 3,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 3),
                                       ),
+                                    ],
+                                  ),
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                      targetUser.profilepic.toString(),
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  targetUser.fullname.toString(),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20.0,
+                                  ),
+                                ),
+                                subtitle:
+                                    (chatRoomModel.lastMessage.toString() != "")
+                                        ? Text(
+                                            chatRoomModel.lastMessage
+                                                .toString(),
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                            ),
+                                          )
+                                        : Text(
+                                            "Say hi to ${targetUser.fullname}",
+                                            style: TextStyle(
+                                              color: Colors.grey[600],
+                                            ),
+                                          ),
+                                trailing: Icon(
+                                  Icons.chat,
+                                  color: Colors.grey[600],
+                                  size: 30,
+                                ),
                               );
                             } else {
                               return Container();
@@ -142,7 +186,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 userModel: widget.userModel, firebaseUser: widget.firebaseUser);
           }));
         },
-        child: const Icon(Icons.search),
+        child: const Icon(Icons.search,color: Colors.white,size: 30,),
+        
       ),
     );
   }

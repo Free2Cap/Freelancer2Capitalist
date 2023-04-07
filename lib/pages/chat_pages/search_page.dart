@@ -31,27 +31,67 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Search"),
-      ),
+  backgroundColor: Colors.purple,
+  title: const Text(
+    "Search",
+    style: TextStyle(color: Colors.white),
+  ),
+  iconTheme: const IconThemeData(color: Colors.white),
+),
+
       body: SafeArea(
         child: Column(
           children: [
-            TextField(
-              controller: searchController,
-              decoration: const InputDecoration(
-                labelText: "Email Address",
-              ),
-            ),
+           TextField(
+  controller: searchController,
+  decoration: InputDecoration(
+    labelText: "Email Address",
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.purple, width: 2),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.purple, width: 2),
+    ),
+    labelStyle: TextStyle(color: Colors.purple),
+    prefixIcon: Icon(Icons.search, color: Colors.purple),
+    hintStyle: TextStyle(color: Colors.grey),
+  ),
+),
+
             const SizedBox(
               height: 20,
             ),
-            CupertinoButton(
-              color: Theme.of(context).colorScheme.secondary,
-              onPressed: () {
-                setState(() {});
-              },
-              child: const Text("Search"),
-            ),
+           CupertinoButton(
+  color: Theme.of(context).colorScheme.secondary,
+  onPressed: () {
+    setState(() {});
+  },
+  child: Container(
+    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.5),
+          spreadRadius: 1,
+          blurRadius: 5,
+          offset: Offset(0, 3), // changes position of shadow
+        ),
+      ],
+    ),
+    child: Text(
+      'Search',
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+    ),
+  ),
+),
+
             const SizedBox(
               height: 20,
             ),

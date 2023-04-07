@@ -37,14 +37,35 @@ class _VerifyEmailState extends State<VerifyEmail> {
     super.dispose();
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.purple, // Add a purple color background
       body: Center(
-          child:
-              Text('An Email has been sent to ${user?.email} please verify.')),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon( // Add an email icon logo
+              Icons.email,
+              color: Colors.white,
+              size: 100.0,
+            ),
+            SizedBox(height: 20.0), // Add a space between the icon and the text
+            Text(
+              'An Email has been sent to ${user?.email} please verify.',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 25.0, // Increase the text size
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
+
 
   Future<void> checkEmailVerified() async {
     user = auth.currentUser;

@@ -62,26 +62,43 @@ class _ProjectListState extends State<ProjectList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Project List",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-            InkWell(
-              child: const Icon(Icons.add_task_outlined),
-              onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ProjectForm(
-                          userModel: widget.userModel,
-                          firebaseUser: widget.firebaseUser))),
-            )
-          ],
+  centerTitle: true,
+  title: Text(
+    "Project List",
+    style: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  backgroundColor: Colors.purple,
+  iconTheme: IconThemeData(color: Colors.white),
+  actions: [
+    InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProjectForm(
+            userModel: widget.userModel,
+            firebaseUser: widget.firebaseUser,
+          ),
         ),
       ),
+      child: Container(
+        padding: EdgeInsets.only(right: 15),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.purple,
+        ),
+        child: Icon(
+          Icons.add_task_outlined,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
+    ),
+  ],
+),
+
       body: SafeArea(
         child: Column(
           children: [
@@ -107,32 +124,53 @@ class _ProjectListState extends State<ProjectList> {
                                 as Map<String, dynamic>;
                             // Build a ListTile for the project
                             return ListTile(
-                              leading: Image.network(
-                                project["projectImages"][0],
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.purple,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Image.network(
+                                    project["projectImages"][0],
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                              title: Text(project["aim"]),
+                              title: Text(
+                                project["aim"],
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Montserrat',
+                                ),
+                              ),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
                                     icon: const Icon(Icons.edit),
+                                    color: Colors.purple,
                                     onPressed: () {
                                       Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ProjectForm(
-                                                    firebaseUser:
-                                                        widget.firebaseUser,
-                                                    userModel: widget.userModel,
-                                                    projectId: project["uid"],
-                                                  )));
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProjectForm(
+                                            firebaseUser: widget.firebaseUser,
+                                            userModel: widget.userModel,
+                                            projectId: project["uid"],
+                                          ),
+                                        ),
+                                      );
                                     },
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.remove_red_eye),
+                                    color: Colors.purple,
                                     onPressed: () {
                                       showDialog(
                                         context: context,
@@ -143,16 +181,18 @@ class _ProjectListState extends State<ProjectList> {
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete),
+                                    color: Colors.purple,
                                     onPressed: () {
                                       UIHelper.showConfirmationAlertDialog(
-                                          context,
-                                          "Are you sure?",
-                                          "Do you want to delete ${project['aim']}",
-                                          (p0) {
-                                        UIHelper.showLoadingDialog(
-                                            context, 'Deleting');
-                                        deleteData(project["uid"]);
-                                      });
+                                        context,
+                                        "Are you sure?",
+                                        "Do you want to delete ${project['aim']}",
+                                        (p0) {
+                                          UIHelper.showLoadingDialog(
+                                              context, 'Deleting');
+                                          deleteData(project["uid"]);
+                                        },
+                                      );
                                     },
                                   ),
                                 ],

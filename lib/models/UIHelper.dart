@@ -117,30 +117,166 @@ class ProjectDetailsDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Objective: ${project['objective'] ?? ''}',
-                style: const TextStyle(fontSize: 16.0),
+              Container(
+                decoration: BoxDecoration(
+                 color: Color.fromARGB(255, 232, 140, 247),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Objective: ${project['objective'] ?? ''}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    letterSpacing: 0.5,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                'Scope: ${project['scope'] ?? ''}',
-                style: const TextStyle(fontSize: 16.0),
+              Container(
+                decoration: BoxDecoration(
+                 color: Color.fromARGB(255, 232, 140, 247),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Scope: ${project['scope'] ?? ''}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    letterSpacing: 0.5,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                'Budget Range: ${(project['budgetStart']?.toStringAsFixed(2) ?? '')} - ${(project['budgetEnd']?.toStringAsFixed(2) ?? '')}',
-                style: const TextStyle(fontSize: 16.0),
+              Container(
+                decoration: BoxDecoration(
+                 color: Color.fromARGB(255, 232, 140, 247),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Budget Range: ${(project['budgetStart']?.toStringAsFixed(2) ?? '')} - ${(project['budgetEnd']?.toStringAsFixed(2) ?? '')}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    letterSpacing: 0.5,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                'Field: ${project['field'] ?? ''}',
-                style: const TextStyle(fontSize: 16.0),
+              Container(
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 232, 140, 247),
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 1,
+                      blurRadius: 3,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(10.0),
+                child: Text(
+                  'Field: ${project['field'] ?? ''}',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                    letterSpacing: 0.5,
+                    shadows: [
+                      Shadow(
+                        offset: const Offset(1.0, 1.0),
+                        blurRadius: 3.0,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 8.0),
-              Text(
-                'Feasibility: ${project['feasibility'] ?? ''}',
-                style: const TextStyle(fontSize: 16.0),
-              ),
+              Container(
+  decoration: BoxDecoration(
+    color: Color.fromARGB(255, 232, 140, 247),
+    borderRadius: BorderRadius.circular(8.0),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.grey.withOpacity(0.5),
+        spreadRadius: 1,
+        blurRadius: 3,
+        offset: const Offset(0, 2),
+      ),
+    ],
+  ),
+  padding: const EdgeInsets.all(10.0),
+  child: Text(
+    'Feasibility: ${project['feasibility'] ?? ''}',
+    style: TextStyle(
+      fontSize: 18.0,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+      letterSpacing: 0.5,
+      shadows: [
+        Shadow(
+          offset: const Offset(1.0, 1.0),
+          blurRadius: 3.0,
+          color: Colors.grey,
+        ),
+      ],
+    ),
+  ),
+),
+
               const SizedBox(height: 16.0),
               const Text(
                 'Images:',
@@ -148,29 +284,38 @@ class ProjectDetailsDialog extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Flexible(
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: project["projectImages"].length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Image.network(
-                      project["projectImages"][index],
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
-              ),
+  child: GridView.builder(
+    shrinkWrap: true,
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 3,
+      crossAxisSpacing: 8,
+      mainAxisSpacing: 8,
+    ),
+    itemCount: project["projectImages"].length,
+    itemBuilder: (BuildContext context, int index) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.purple,
+            width: 2,
+          ),
+        ),
+        child: Image.network(
+          project["projectImages"][index],
+          fit: BoxFit.cover,
+        ),
+      );
+    },
+  ),
+),
+
               const SizedBox(height: 16.0),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all(Colors.purple),
                     foregroundColor: MaterialStateProperty.all(Colors.white),
                     padding: MaterialStateProperty.all(
                       const EdgeInsets.symmetric(

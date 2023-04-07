@@ -196,14 +196,18 @@ class _ProjectFormState extends State<ProjectForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Project',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+  backgroundColor: Colors.purple,
+  centerTitle: true,
+  title: const Text(
+    'Add Project',
+    style: TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+  iconTheme: const IconThemeData(color: Colors.white),
+),
+
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
@@ -213,8 +217,27 @@ class _ProjectFormState extends State<ProjectForm> {
               TextField(
                 maxLines: null,
                 controller: aimController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Aim',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  labelStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -223,8 +246,22 @@ class _ProjectFormState extends State<ProjectForm> {
               TextField(
                 maxLines: null,
                 controller: objectiveController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Objective',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -233,32 +270,100 @@ class _ProjectFormState extends State<ProjectForm> {
               TextField(
                 maxLines: null,
                 controller: scopeController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Scope',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              DropdownButton<String>(
-                value: dropdownValue,
-                onChanged: (String? newValue) {
+              PopupMenuButton<String>(
+                initialValue: dropdownValue,
+                onSelected: (String newValue) {
                   setState(() {
-                    dropdownValue = newValue!;
+                    dropdownValue = newValue;
                   });
                 },
-                items: <String>[
-                  'Select a field',
-                  'Science',
-                  'Technology',
-                  'Engineering',
-                  'Mathematics'
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: 'Select a field',
+                    child: Text('Select a field'),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Science',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Science'),
+                        Icon(Icons.science),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Technology',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Technology'),
+                        Icon(Icons.computer),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Engineering',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Engineering'),
+                        Icon(Icons.engineering),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<String>(
+                    value: 'Mathematics',
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Mathematics'),
+                        Icon(Icons.calculate),
+                      ],
+                    ),
+                  ),
+                ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Colors.grey[200],
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        dropdownValue,
+                        style: TextStyle(
+// fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -266,46 +371,75 @@ class _ProjectFormState extends State<ProjectForm> {
               TextField(
                 maxLines: null,
                 controller: feasibilityController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Feasibility',
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              const Text('Your Budget'),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '\u{20B9}${_budgetRangeValues.start.round()}',
-                    style: TextStyle(color: Theme.of(context).indicatorColor),
-                  ),
-                  Expanded(
-                    child: RangeSlider(
-                      values: _budgetRangeValues,
-                      min: 0,
-                      max: 10000,
-                      divisions: 100,
-                      activeColor: Theme.of(context).primaryColor,
-                      inactiveColor: Colors.black.withOpacity(0.5),
-                      labels: RangeLabels(
-                        '\u{20B9}${_budgetRangeValues.start.round().toString()}',
-                        '\u{20B9}${_budgetRangeValues.end.round().toString()}',
-                      ),
-                      onChanged: (RangeValues values) {
-                        setState(() {
-                          _budgetRangeValues = values;
-                        });
-                      },
+                    'Your Budget',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    '\u{20B9}${_budgetRangeValues.end.round()}',
-                    style: TextStyle(color: Theme.of(context).indicatorColor),
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\u{20B9}${_budgetRangeValues.start.round()}',
+                        style: TextStyle(
+                          color: Theme.of(context).indicatorColor,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                      Expanded(
+                        child: RangeSlider(
+                          values: _budgetRangeValues,
+                          min: 0,
+                          max: 10000,
+                          divisions: 100,
+                          activeColor: Theme.of(context).primaryColor,
+                          inactiveColor: Colors.black.withOpacity(0.5),
+                          labels: RangeLabels(
+                            '\u{20B9}${_budgetRangeValues.start.round().toString()}',
+                            '\u{20B9}${_budgetRangeValues.end.round().toString()}',
+                          ),
+                          onChanged: (RangeValues values) {
+                            setState(() {
+                              _budgetRangeValues = values;
+                            });
+                          },
+                        ),
+                      ),
+                      Text(
+                        '\u{20B9}${_budgetRangeValues.end.round()}',
+                        style: TextStyle(
+                          color: Theme.of(context).indicatorColor,
+                          fontSize: 16.0,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -332,7 +466,24 @@ class _ProjectFormState extends State<ProjectForm> {
                     ScaffoldMessenger.of(context).showSnackBar(snackdemo);
                   }
                 },
-                child: const Text('Select Images'),
+                child: Container(
+                  width: 140,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    color: Colors.purple,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Select Images',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -376,11 +527,23 @@ class _ProjectFormState extends State<ProjectForm> {
               ElevatedButton(
                 onPressed: () {
                   checkValues();
-                  // UIHelper.showAlertDialog(
-                  //     context, 'Submitting Project', "Work in progress");
-                }, //checkValues(),
-                child: const Text('Submit'),
-              ),
+// UIHelper.showAlertDialog(context, 'Submitting Project', "Work in progress");
+                },
+                child: const Text(
+                  'Submit',
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  primary: const Color.fromARGB(255, 184, 4, 208),
+                  onPrimary: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  minimumSize: const Size(300, 50),
+                ),
+              )
             ],
           ),
         ),

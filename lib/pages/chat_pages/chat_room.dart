@@ -125,89 +125,166 @@ class _ChatRoomState extends State<ChatRoom> {
     widget.chatVisitedNotifier.value = true;
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.grey[300],
-              backgroundImage:
-                  NetworkImage(widget.targetUser.profilepic.toString()),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(widget.targetUser.fullname.toString()),
-                StreamBuilder<DocumentSnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(widget.targetUser.uid)
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<DocumentSnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Text('Loading...');
-                    }
-                    final targetUserDoc = snapshot.data!;
-                    final isActive = targetUserDoc.get("isActive");
-                    final lastSeen = targetUserDoc.get("lastseen").toDate();
-                    final isTyping = targetUserDoc.get("isTyping");
-                    final now = DateTime.now();
-                    final difference = now.difference(lastSeen);
-
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: isTyping
-                            ? const Color.fromARGB(255, 24, 129, 27)
-                            : isActive
-                                ? Colors.green
-                                : difference < const Duration(minutes: 10)
-                                    ? Colors.orange
-                                    : Colors.red.shade800,
-                      ),
-                      child: Text(
-                        isTyping
-                            ? 'Typing...'
-                            : isActive
-                                ? 'Active...'
-                                : difference >= const Duration(hours: 24)
-                                    ? "Last Seen at ${intl.DateFormat("dd-MM-yyyy").format(lastSeen).toString()}"
-                                    : difference < const Duration(minutes: 10)
-                                        ? "Inactive..."
-                                        : "Last Seen at ${intl.DateFormat("hh:mm a").format(lastSeen).toString()}",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                        ),
-                      ),
-                    );
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
-        actions: [
-          InkWell(
-            onTap: () {
-              log(widget.chatRoom.toString());
-              showDialog(
-                context: context,
-                builder: (_) => ListOfProjects(
-                  chatRoomModel: widget.chatRoom,
+          backgroundColor: Colors.purple,
+          title: Row(
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 2,
+                  ),
                 ),
-              );
-            },
-            child: const Icon(Icons.account_balance),
-          )
-        ],
-      ),
+                child: CircleAvatar(
+                  backgroundColor: Colors.grey[300],
+                  backgroundImage:
+                      NetworkImage(widget.targetUser.profilepic.toString()),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.targetUser.fullname.toString(),
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
+                  ),
+                  StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(widget.targetUser.uid)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DocumentSnapshot> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Text('Loading...');
+                      }
+                      final targetUserDoc = snapshot.data!;
+                      final isActive = targetUserDoc.get("isActive");
+                      final lastSeen = targetUserDoc.get("lastseen").toDate();
+                      final isTyping = targetUserDoc.get("isTyping");
+                      final now = DateTime.now();
+                      final difference = now.difference(lastSeen);
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: isTyping
+                              ? const Color.fromARGB(255, 24, 129, 27)
+                              : isActive
+                                  ? Colors.green
+                                  : difference < const Duration(minutes: 10)
+                                      ? Colors.orange
+                                      : Colors.red.shade800,
+                        ),
+                        child: Text(
+                          isTyping
+                              ? 'Typing...'
+                              : isActive
+                                  ? 'Active...'
+                                  : difference >= const Duration(hours: 24)
+                                      ? "Last Seen at ${intl.DateFormat("dd-MM-yyyy").format(lastSeen).toString()}"
+                                      : difference < const Duration(minutes: 10)
+                                          ? "Inactive..."
+                                          : "Last Seen at ${intl.DateFormat("hh:mm a").format(lastSeen).toString()}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
+            ],
+          ),
+          // actions: [
+          //   if (!kIsWeb) // Show the video call icon only on Android
+          //     Padding(
+          //       padding: const EdgeInsets.all(10.0),
+          //       child: PopupMenuButton<String>(
+          //         itemBuilder: (BuildContext context) =>
+          //             <PopupMenuEntry<String>>[
+          //           const PopupMenuItem<String>(
+          //             value: 'video',
+          //             child: ListTile(
+          //               leading: Icon(Icons.video_call,
+          //                   color: Colors.white, size: 30),
+          //               title: Text(
+          //                 'Video Call',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                   fontWeight: FontWeight.bold,
+          //                   fontSize: 18,
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //           const PopupMenuItem<String>(
+          //             value: 'projects',
+          //             child: ListTile(
+          //               leading: Icon(
+          //                 Icons.account_balance,
+          //                 color: Colors.white,
+          //               ),
+          //               title: Text('Projects',
+          //                   style: TextStyle(
+          //                       color: Colors.white,
+          //                       fontWeight: FontWeight.bold,
+          //                       fontSize: 18)),
+          //             ),
+          //           ),
+          //         ],
+          //         onSelected: (String value) {
+          //           // Handle selection
+          //           if (value == 'video') {
+          //             CallUtils.dial(
+          //               from: widget.userModel,
+          //               to: widget.targetUser,
+          //               context: context,
+          //             );
+          //             // Navigator.of(context).push(
+          //             //     MaterialPageRoute(builder: (_) => const VideoCall()));
+          //             // UIHelper.showAlertDialog(
+          //             //     context, 'Video Call', 'Work in progress');
+          //           } else if (value == 'projects') {
+          //             log(widget.chatRoom.toString());
+          //             showDialog(
+          //               context: context,
+          //               builder: (_) => ListOfProjects(
+          //                 chatRoomModel: widget.chatRoom,
+          //               ),
+          //             );
+          //           }
+          //         },
+          //         icon: const Icon(
+          //           Icons.more_vert_rounded,
+          //           color: Colors.white,
+          //           size: 35,
+          //         ),
+          //         offset: const Offset(0, 40),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(10),
+          //         ),
+          //         color: Colors.purple[700],
+          //         elevation: 3,
+          //       ),
+          //     ),
+          // ],
+        ),
       body: SafeArea(
         child: Column(
           children: [
@@ -383,16 +460,24 @@ class _ChatRoomState extends State<ChatRoom> {
               ),
               child: Row(
                 children: [
-                  Flexible(
-                    child: TextField(
-                      controller: messageController,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Enter Message",
+                  Expanded(
+                      child: TextField(
+                        controller: messageController,
+                        maxLines: null,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Enter Message",
+                          hintStyle: TextStyle(
+                            color: Colors.purple,
+                            fontSize: 16,
+                          ),
+                        ),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
-                  ),
                   IconButton(
                       onPressed: () {
                         sendMessage();
